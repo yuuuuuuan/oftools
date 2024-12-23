@@ -1,25 +1,26 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "os"
-    "context"
+	"context"
+	"log"
+	"oftools/cmd"
+	"os"
 
-    "github.com/urfave/cli/v3"
+	"github.com/urfave/cli/v3"
 )
 
 func main() {
-    app := &cli.Command{
-        Name:  "oftools",
-        Usage: "fight the loneliness!",
-        Action: func(context.Context, *cli.Command) error {
-            fmt.Println("Hello friend!")
-            return nil
-        },
-    }
+	app := &cli.Command{
+		Name:  "oftools",
+		Usage: "fight the loneliness!",
+		Commands: []*cli.Command{
+			cmd.GreetCommand,   // Register greet command
+			cmd.CalcCommand,    // Register calc command
+			cmd.VersionCommand, // Register version command
+		},
+	}
 
-    if err := cmd.Run(context.Background(), os.Args); err != nil {
-        log.Fatal(err)
-    }
+	if err := app.Run(context.Background(), os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
