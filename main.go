@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+
 	"oftools/cmd"
 	"os"
 
@@ -9,10 +10,10 @@ import (
 )
 
 func main() {
-	app := &cli.Command{
+	app := &cli.App{
 		Name:  "oftools",
 		Usage: "fight the loneliness!",
-		Subcommands: []*cli.Command{
+		Commands: []*cli.Command{
 			cmd.GreetCommand,   // Register greet command
 			cmd.CalcCommand,    // Register calc command
 			cmd.VersionCommand, // Register version command
