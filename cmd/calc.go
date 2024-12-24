@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v3"
+	"github.com/urfave/cli/v2"
 )
 
 // CalcCommand is a simple calculator command.
@@ -19,22 +18,22 @@ var CalcCommand = &cli.Command{
 			Usage:    "Operation to perform (add, sub, mul, div)",
 			Required: false,
 		},
-		&cli.FloatFlag{
+		&cli.Float64Flag{
 			Name:     "a",
 			Aliases:  []string{"x"},
 			Usage:    "First number",
 			Required: true,
 		},
-		&cli.FloatFlag{
+		&cli.Float64Flag{
 			Name:     "b",
 			Aliases:  []string{"y"},
 			Usage:    "Second number",
 			Required: true,
 		},
 	},
-	Action: func(ctx context.Context, c *cli.Command) error {
-		a := c.Float("a")
-		b := c.Float("b")
+	Action: func(c *cli.Context) error {
+		a := c.Float64("a")
+		b := c.Float64("b")
 		operation := c.String("operation")
 
 		var result float64

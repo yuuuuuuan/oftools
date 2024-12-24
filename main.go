@@ -1,26 +1,26 @@
 package main
 
 import (
-	"context"
 	"log"
 	"oftools/cmd"
 	"os"
 
-	"github.com/urfave/cli/v3"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	app := &cli.Command{
 		Name:  "oftools",
 		Usage: "fight the loneliness!",
-		Commands: []*cli.Command{
+		Subcommands: []*cli.Command{
 			cmd.GreetCommand,   // Register greet command
 			cmd.CalcCommand,    // Register calc command
 			cmd.VersionCommand, // Register version command
+			cmd.ConvertCommand,
 		},
 	}
 
-	if err := app.Run(context.Background(), os.Args); err != nil {
+	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v3"
+	"github.com/urfave/cli/v2"
 )
 
 // GreetCommand is a simple command to greet the user.
@@ -20,7 +19,7 @@ var GreetCommand = &cli.Command{
 			Required: true,
 		},
 	},
-	Action: func(ctx context.Context, c *cli.Command) error {
+	Action: func(c *cli.Context) error {
 		name := c.String("name")
 		fmt.Printf("Hello, %s!\n", name)
 		return nil
