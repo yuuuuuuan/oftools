@@ -10,14 +10,14 @@ import (
 // CalcCommand is a simple calculator command.
 var CalcCommand = &cli.Command{
 	Name:    "calc",
-	Aliases: []string{"c"},
+	Aliases: []string{"cal"},
 	Usage:   "Performs basic arithmetic operations (add, subtract, multiply, divide)",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:     "operation",
 			Aliases:  []string{"o"},
 			Usage:    "Operation to perform (add, sub, mul, div)",
-			Required: true,
+			Required: false,
 		},
 		&cli.FloatFlag{
 			Name:     "a",
