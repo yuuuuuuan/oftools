@@ -39,7 +39,7 @@ func ConvertHexToOthers(hexValue string) (Conversion, error) {
 }
 
 // ConvertDecToOthers converts a decimal value to hex, binary, and octal
-func ConvertDecToOthers(decimalValue int64) Conversion {
+func ConvertDecToOthers(decimalValue int64) (Conversion, error) {
 	// Convert decimal to hex, binary, and octal
 	hexValue := fmt.Sprintf("0x%X", decimalValue)
 	binaryValue := fmt.Sprintf("%b", decimalValue)
@@ -50,7 +50,7 @@ func ConvertDecToOthers(decimalValue int64) Conversion {
 		Dec: decimalValue,
 		Bin: binaryValue,
 		Oct: octalValue,
-	}
+	},nil
 }
 
 // ConvertBinToOthers converts a binary value to hex, decimal, and octal
@@ -92,42 +92,3 @@ func ConvertOctToOthers(octalValue string) (Conversion, error) {
 		Oct: octalValue,
 	}, nil
 }
-
-// Display prints all the converted values
-// func (c Conversion) Display() {
-// 	fmt.Printf("Hex: %s\n", c.Hex)
-// 	fmt.Printf("Decimal: %d\n", c.Dec)
-// 	fmt.Printf("Binary: %s\n", c.Bin)
-// 	fmt.Printf("Octal: %s\n", c.Oct)
-// }
-
-// func main() {
-// 	// Example: Convert a hex value to all other systems
-// 	hexValue := "0x1a"
-// 	conversion, err := ConvertHexToOthers(hexValue)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	conversion.Display()
-
-// 	// Example: Convert a decimal value to all other systems
-// 	decValue := int64(26)
-// 	conversion = ConvertDecToOthers(decValue)
-// 	conversion.Display()
-
-// 	// Example: Convert a binary value to all other systems
-// 	binValue := "11010"
-// 	conversion, err = ConvertBinToOthers(binValue)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	conversion.Display()
-
-// 	// Example: Convert an octal value to all other systems
-// 	octalValue := "32"
-// 	conversion, err = ConvertOctToOthers(octalValue)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	conversion.Display()
-// }
