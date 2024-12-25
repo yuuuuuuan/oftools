@@ -11,17 +11,15 @@ var ExcelCommand = &cli.Command{
 	Name:    "excel",
 	Aliases: []string{"e"},
 	Usage:   "Greets the user with the provided name",
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:     "name",
-			Aliases:  []string{"n"},
-			Usage:    "Name of the person to greet",
-			Required: true,
+	Subcommands: []*cli.Command{
+		// Hex to other systems
+		{
+			Name:  "sum",
+			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Action: func(ctx *cli.Context) error {
+				
+				return nil
+			},
 		},
-	},
-	Action: func(c *cli.Context) error {
-		name := c.String("name")
-		fmt.Printf("Hello, %s!\n", name)
-		return nil
 	},
 }
