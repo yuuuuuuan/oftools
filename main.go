@@ -18,6 +18,7 @@ func main() {
 			cmd.CalcCommand,    // Register calc command
 			cmd.VersionCommand, // Register version command
 			cmd.ConvertCommand,
+			cmd.ExcelCommand,
 		},
 	}
 
