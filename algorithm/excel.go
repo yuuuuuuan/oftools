@@ -79,62 +79,53 @@ func copyOrMergeCSV(src string, dest string) error {
 	return fmt.Errorf("destination file %s already exists and is not a CSV or INI file", dest)
 }
 
-// mergeINIFiles merges the contents of the source INI file into the destination INI file.
-// If there are duplicate keys, the keys from the source file are renamed with _1, _2, etc.
-func mergeINIFiles(src, dest string) error {
+// mergeINIFiles merges the contents of src INI file into the destination directory
+// while handling duplicate filenames by appending incremental suffixes (_1, _2, etc.).
+func mergeINIFiles(src string, destDir string) error {
+	// Get the base filename of the source file
+	srcFilename := filepath.Base(src)
+	destPath := filepath.Join(destDir, srcFilename)
+
+	// If a file with the same name exists, generate a new unique filename
+	destPath = ensureUniqueFilename(destPath)
+
 	// Load the source INI file
-	srcCfg, err := ini.Load(src)
+	srcFile, err := ini.Load(src)
 	if err != nil {
 		return fmt.Errorf("failed to load source INI file: %w", err)
 	}
 
-	// Load or create the destination INI file
-	destCfg, err := ini.Load(dest)
+	// Save the INI file to the unique destination path
+	err = srcFile.SaveTo(destPath)
 	if err != nil {
-		// If the destination file doesn't exist, create a new INI object
-		if os.IsNotExist(err) {
-			destCfg = ini.Empty()
-		} else {
-			return fmt.Errorf("failed to load destination INI file: %w", err)
-		}
+		return fmt.Errorf("failed to save INI file to destination: %w", err)
 	}
 
-	// Iterate through all sections and keys in the source file
-	for _, srcSection := range srcCfg.Sections() {
-		destSection, err := destCfg.GetSection(srcSection.Name())
-		if err != nil {
-			// If the section doesn't exist in the destination, create it
-			destSection, _ = destCfg.NewSection(srcSection.Name())
-		}
-
-		// Iterate through all keys in the source section
-		for _, srcKey := range srcSection.Keys() {
-			originalKey := srcKey.Name()
-			newKey := originalKey
-			counter := 1
-
-			// Ensure the key doesn't already exist in the destination section
-			for destSection.HasKey(newKey) {
-				newKey = fmt.Sprintf("%s_%d", originalKey, counter)
-				counter++
-			}
-
-			// Add the key-value pair to the destination section
-			_, err := destSection.NewKey(newKey, srcKey.Value())
-			if err != nil {
-				return fmt.Errorf("failed to add key %s to section %s: %w", newKey, srcSection.Name(), err)
-			}
-		}
-	}
-
-	// Save the merged configuration back to the destination file
-	err = destCfg.SaveTo(dest)
-	if err != nil {
-		return fmt.Errorf("failed to save destination INI file: %w", err)
-	}
-
+	fmt.Printf("Merged %s into %s\n", src, destPath)
 	return nil
 }
+
+// ensureUniqueFilename checks if a file exists and appends a suffix (_1, _2, ...) until the filename is unique.
+func ensureUniqueFilename(filePath string) string {
+	dir := filepath.Dir(filePath)
+	ext := filepath.Ext(filePath)
+	base := filepath.Base(filePath[:len(filePath)-len(ext)])
+
+	counter := 1
+	newPath := filePath
+
+	for {
+		if _, err := os.Stat(newPath); os.IsNotExist(err) {
+			// File does not exist, return this path
+			return newPath
+		}
+
+		// File exists, generate a new filename with a counter
+		newPath = filepath.Join(dir, fmt.Sprintf("%s_%d%s", base, counter, ext))
+		counter++
+	}
+}
+
 
 // Function to merge two CSV files
 func mergeCSVFiles(src string, dest string) error {
