@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"gopkg.in/ini.v1"
 )
 
 func ExcelSumMult(sourceDirs []string, destDir string) error {
@@ -69,63 +67,10 @@ func copyOrMergeCSV(src string, dest string) error {
 		return mergeCSVFiles(src, dest)
 	}
 
-	// Destination file exists, check if it's a INI file
-	if filepath.Ext(dest) == ".ini" {
-		// Merge the two CSV files
-		return mergeINIFiles(src, dest)
-	}
-
 	// If the file exists but is not a CSV, return an error or handle it differently
-	return fmt.Errorf("destination file %s already exists and is not a CSV or INI file", dest)
-}
-
-// mergeINIFiles merges the contents of src INI file into the destination directory
-// while handling duplicate filenames by appending incremental suffixes (_1, _2, etc.).
-func mergeINIFiles(src string, destDir string) error {
-	// Get the base filename of the source file
-	srcFilename := filepath.Base(src)
-	destPath := filepath.Join(destDir, srcFilename)
-
-	// If a file with the same name exists, generate a new unique filename
-	destPath = ensureUniqueFilename(destPath)
-
-	// Load the source INI file
-	srcFile, err := ini.Load(src)
-	if err != nil {
-		return fmt.Errorf("failed to load source INI file: %w", err)
-	}
-
-	// Save the INI file to the unique destination path
-	err = srcFile.SaveTo(destPath)
-	if err != nil {
-		return fmt.Errorf("failed to save INI file to destination: %w", err)
-	}
-
-	fmt.Printf("Merged %s into %s\n", src, destPath)
+	//return fmt.Errorf("destination file %s already exists and is not a CSV or INI file", dest)
 	return nil
 }
-
-// ensureUniqueFilename checks if a file exists and appends a suffix (_1, _2, ...) until the filename is unique.
-func ensureUniqueFilename(filePath string) string {
-	dir := filepath.Dir(filePath)
-	ext := filepath.Ext(filePath)
-	base := filepath.Base(filePath[:len(filePath)-len(ext)])
-
-	counter := 1
-	newPath := filePath
-
-	for {
-		if _, err := os.Stat(newPath); os.IsNotExist(err) {
-			// File does not exist, return this path
-			return newPath
-		}
-
-		// File exists, generate a new filename with a counter
-		newPath = filepath.Join(dir, fmt.Sprintf("%s_%d%s", base, counter, ext))
-		counter++
-	}
-}
-
 
 // Function to merge two CSV files
 func mergeCSVFiles(src string, dest string) error {
