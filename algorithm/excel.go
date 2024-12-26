@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"gopkg.in/ini.v1"
 )
 
 func ExcelSumMult(sourceDirs []string, destDir string) error {
@@ -67,8 +69,71 @@ func copyOrMergeCSV(src string, dest string) error {
 		return mergeCSVFiles(src, dest)
 	}
 
+	// Destination file exists, check if it's a INI file
+	if filepath.Ext(dest) == ".ini" {
+		// Merge the two CSV files
+		return mergeINIFiles(src, dest)
+	}
+
 	// If the file exists but is not a CSV, return an error or handle it differently
-	return fmt.Errorf("destination file %s already exists and is not a CSV file", dest)
+	return fmt.Errorf("destination file %s already exists and is not a CSV or INI file", dest)
+}
+
+// mergeINIFiles merges the contents of the source INI file into the destination INI file.
+// If there are duplicate keys, the keys from the source file are renamed with _1, _2, etc.
+func mergeINIFiles(src, dest string) error {
+	// Load the source INI file
+	srcCfg, err := ini.Load(src)
+	if err != nil {
+		return fmt.Errorf("failed to load source INI file: %w", err)
+	}
+
+	// Load or create the destination INI file
+	destCfg, err := ini.Load(dest)
+	if err != nil {
+		// If the destination file doesn't exist, create a new INI object
+		if os.IsNotExist(err) {
+			destCfg = ini.Empty()
+		} else {
+			return fmt.Errorf("failed to load destination INI file: %w", err)
+		}
+	}
+
+	// Iterate through all sections and keys in the source file
+	for _, srcSection := range srcCfg.Sections() {
+		destSection, err := destCfg.GetSection(srcSection.Name())
+		if err != nil {
+			// If the section doesn't exist in the destination, create it
+			destSection, _ = destCfg.NewSection(srcSection.Name())
+		}
+
+		// Iterate through all keys in the source section
+		for _, srcKey := range srcSection.Keys() {
+			originalKey := srcKey.Name()
+			newKey := originalKey
+			counter := 1
+
+			// Ensure the key doesn't already exist in the destination section
+			for destSection.HasKey(newKey) {
+				newKey = fmt.Sprintf("%s_%d", originalKey, counter)
+				counter++
+			}
+
+			// Add the key-value pair to the destination section
+			_, err := destSection.NewKey(newKey, srcKey.Value())
+			if err != nil {
+				return fmt.Errorf("failed to add key %s to section %s: %w", newKey, srcSection.Name(), err)
+			}
+		}
+	}
+
+	// Save the merged configuration back to the destination file
+	err = destCfg.SaveTo(dest)
+	if err != nil {
+		return fmt.Errorf("failed to save destination INI file: %w", err)
+	}
+
+	return nil
 }
 
 // Function to merge two CSV files
@@ -160,24 +225,3 @@ func copyFile(src string, dest string) error {
 	_, err = io.Copy(destFile, srcFile)
 	return err
 }
-
-// // Function to copy a single file from source to destination
-// func copyFile(src string, dest string) error {
-// 	// Open the source file
-// 	srcFile, err := os.Open(src)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer srcFile.Close()
-
-// 	// Create the destination file
-// 	destFile, err := os.Create(dest)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer destFile.Close()
-
-// 	// Copy the content from source file to destination file
-// 	_, err = io.Copy(destFile, srcFile)
-// 	return err
-// }
