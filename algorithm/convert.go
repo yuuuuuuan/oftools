@@ -28,6 +28,7 @@ func ConvertHexToOthers(hexValue string) (Conversion, error) {
 	// Convert decimal to binary and octal
 	binaryValue := fmt.Sprintf("%b", decimalValue)
 	octalValue := fmt.Sprintf("%o", decimalValue)
+	hexValue = fmt.Sprintf("0x%X", decimalValue)
 
 	// Return the Conversion struct with all the systems
 	return Conversion{
@@ -50,7 +51,7 @@ func ConvertDecToOthers(decimalValue int64) (Conversion, error) {
 		Dec: decimalValue,
 		Bin: binaryValue,
 		Oct: octalValue,
-	},nil
+	}, nil
 }
 
 // ConvertBinToOthers converts a binary value to hex, decimal, and octal

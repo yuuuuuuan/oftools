@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"oftools/algorithm"
+	"strconv"
 
 	"github.com/urfave/cli/v2"
 )
@@ -16,7 +17,7 @@ var ConvertCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "hex",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Convert a hex value to decimal, binary, and octal",
 			Action: func(ctx *cli.Context) error {
 				value := ctx.Args().Get(0)
 				var result algorithm.Conversion
@@ -25,7 +26,7 @@ var ConvertCommand = &cli.Command{
 				if err != nil {
 					return fmt.Errorf("invalid hexadecimal value: %v", err)
 				}
-				fmt.Printf("Hex: %s -> Hex: 0x%X\n", value, result.Hex)
+				fmt.Printf("Hex: %s -> Hex: %s\n", value, result.Hex)
 				fmt.Printf("Hex: %s -> Dec: %d\n", value, result.Dec)
 				fmt.Printf("Hex: %s -> Oct: %s\n", value, result.Oct)
 				fmt.Printf("Hex: %s -> Bin: %s\n", value, result.Bin)
@@ -38,13 +39,19 @@ var ConvertCommand = &cli.Command{
 			Usage: "Convert a decimal value to hex, binary, and octal",
 			Action: func(ctx *cli.Context) error {
 				value := ctx.Args().Get(0)
+
 				var result algorithm.Conversion
 				var err error
-				result, err = algorithm.ConvertHexToOthers(value)
+				value1, err := strconv.ParseInt(value, 10, 64)
+				if err != nil {
+					return fmt.Errorf("Error:%v", err)
+
+				}
+				result, err = algorithm.ConvertDecToOthers(value1)
 				if err != nil {
 					return fmt.Errorf("invalid decimal value: %v", err)
 				}
-				fmt.Printf("Dec: %s -> Hex: 0x%X\n", value, result.Hex)
+				fmt.Printf("Dec: %s -> Hex: %s\n", value, result.Hex)
 				fmt.Printf("Dec: %s -> Dec: %d\n", value, result.Dec)
 				fmt.Printf("Dec: %s -> Oct: %s\n", value, result.Oct)
 				fmt.Printf("Dec: %s -> Bin: %s\n", value, result.Bin)
@@ -59,11 +66,11 @@ var ConvertCommand = &cli.Command{
 				value := ctx.Args().Get(0)
 				var result algorithm.Conversion
 				var err error
-				result, err = algorithm.ConvertHexToOthers(value)
+				result, err = algorithm.ConvertOctToOthers(value)
 				if err != nil {
 					return fmt.Errorf("invalid octal value: %v", err)
 				}
-				fmt.Printf("Oct: %s -> Hex: 0x%X\n", value, result.Hex)
+				fmt.Printf("Oct: %s -> Hex: %s\n", value, result.Hex)
 				fmt.Printf("Oct: %s -> Dec: %d\n", value, result.Dec)
 				fmt.Printf("Oct: %s -> Oct: %s\n", value, result.Oct)
 				fmt.Printf("Oct: %s -> Bin: %s\n", value, result.Bin)
@@ -78,11 +85,11 @@ var ConvertCommand = &cli.Command{
 				value := ctx.Args().Get(0)
 				var result algorithm.Conversion
 				var err error
-				result, err = algorithm.ConvertHexToOthers(value)
+				result, err = algorithm.ConvertBinToOthers(value)
 				if err != nil {
 					return fmt.Errorf("invalid binary value: %v", err)
 				}
-				fmt.Printf("Bin: %s -> Hex: 0x%X\n", value, result.Hex)
+				fmt.Printf("Bin: %s -> Hex: %s\n", value, result.Hex)
 				fmt.Printf("Bin: %s -> Dec: %d\n", value, result.Dec)
 				fmt.Printf("Bin: %s -> Oct: %s\n", value, result.Oct)
 				fmt.Printf("Bin: %s -> Bin: %s\n", value, result.Bin)
