@@ -71,28 +71,3 @@ func copyFile(src string, dest string) error {
 	_, err = io.Copy(destFile, srcFile)
 	return err
 }
-
-// func main() {
-// 	// Define source directories and the destination directory
-// 	sourceDirs := []string{"source1", "source2", "source3"}
-// 	destDir := "destination"
-
-// 	// Create the destination directory if it doesn't exist
-// 	if _, err := os.Stat(destDir); os.IsNotExist(err) {
-// 		err := os.MkdirAll(destDir, os.ModePerm)
-// 		if err != nil {
-// 			log.Fatal("Error creating destination folder:", err)
-// 		}
-// 	}
-
-// 	// Merge each source folder into the destination folder
-// 	for _, sourceDir := range sourceDirs {
-// 		fmt.Printf("Merging folder: %s\n", sourceDir)
-// 		err := mergeFolders(sourceDir, destDir)
-// 		if err != nil {
-// 			log.Fatal("Error merging folder:", err)
-// 		}
-// 	}
-
-// 	fmt.Println("Folders merged successfully!")
-// }
