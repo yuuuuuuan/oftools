@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func ExcelSumMult(sourceDirs []string, destDir string) error {
@@ -65,31 +66,36 @@ func copyOrMerge(src string, dest string) error {
 		return mergeCSVFiles(src, dest)
 	}
 
+	// If dest exists, merge if both are CSV files
+	if filepath.Ext(src) == ".ini" && filepath.Ext(dest) == ".ini" {
+		return mergeINIFiles(src, dest)
+	}
+
 	// For non-CSV files, return an error or handle differently
 	return fmt.Errorf("cannot merge non-CSV files: %s and %s", src, dest)
 }
 
-// Function to copy a single file from src to dest
-func copyFile(src string, dest string) error {
-	srcFile, err := os.Open(src)
-	if err != nil {
-		return fmt.Errorf("failed to open source file: %w", err)
-	}
-	defer srcFile.Close()
+// Function to merge INI files
+func mergeINIFiles(src string, dest string) error {
+	// Extract the directory and base name from dest
+	destDir := filepath.Dir(dest)
+	baseName := strings.TrimSuffix(filepath.Base(dest), ".ini")
 
-	destFile, err := os.Create(dest)
-	if err != nil {
-		return fmt.Errorf("failed to create destination file: %w", err)
+	// Determine a unique filename in the destination directory
+	newDest := dest
+	counter := 1
+	for {
+		// Check if the file exists
+		if _, err := os.Stat(newDest); os.IsNotExist(err) {
+			break // File does not exist, we can use this name
+		}
+		// Increment the counter and try a new name
+		newDest = filepath.Join(destDir, fmt.Sprintf("%s_%d.ini", baseName, counter))
+		counter++
 	}
-	defer destFile.Close()
 
-	_, err = io.Copy(destFile, srcFile)
-	if err != nil {
-		return fmt.Errorf("failed to copy file: %w", err)
-	}
-
-	fmt.Printf("Copied %s to %s\n", src, dest)
-	return nil
+	// Copy the source file to the new destination
+	return copyFile(src, newDest)
 }
 
 // Function to merge two CSV files (entire content, including headers)
@@ -134,5 +140,28 @@ func mergeCSVFiles(src string, dest string) error {
 	}
 
 	fmt.Printf("Merged %s into %s\n", src, dest)
+	return nil
+}
+
+// Function to copy a single file from src to dest
+func copyFile(src string, dest string) error {
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("failed to open source file: %w", err)
+	}
+	defer srcFile.Close()
+
+	destFile, err := os.Create(dest)
+	if err != nil {
+		return fmt.Errorf("failed to create destination file: %w", err)
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, srcFile)
+	if err != nil {
+		return fmt.Errorf("failed to copy file: %w", err)
+	}
+
+	fmt.Printf("Copied %s to %s\n", src, dest)
 	return nil
 }
