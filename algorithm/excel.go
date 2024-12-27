@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func ExcelSumMult(sourceDirs []string, destDir string) error {
@@ -36,7 +35,7 @@ func ExcelSumSinger(sourceDir string, destDir string) error {
 
 		// If it's a file, copy it to the destination
 		if !info.IsDir() {
-			err := copyOrMergeCSV(srcPath, destPath)
+			err := copyOrMerge(srcPath, destPath)
 			if err != nil {
 				return err
 			}
@@ -53,111 +52,92 @@ func ExcelSumSinger(sourceDir string, destDir string) error {
 	return err
 }
 
-// Function to copy or merge a CSV file
-func copyOrMergeCSV(src string, dest string) error {
-	// Check if destination file exists
+// Function to copy or merge files based on their existence
+func copyOrMerge(src string, dest string) error {
+	// Check if dest file exists
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
-		// Destination file does not exist, just copy the file
+		// If dest does not exist, simply copy the file
 		return copyFile(src, dest)
 	}
 
-	// Destination file exists, check if it's a CSV file
-	if filepath.Ext(dest) == ".csv" {
-		// Merge the two CSV files
+	// If dest exists, merge if both are CSV files
+	if filepath.Ext(src) == ".csv" && filepath.Ext(dest) == ".csv" {
 		return mergeCSVFiles(src, dest)
 	}
 
-	// If the file exists but is not a CSV, return an error or handle it differently
-	//return fmt.Errorf("destination file %s already exists and is not a CSV or INI file", dest)
-	return nil
+	// For non-CSV files, return an error or handle differently
+	return fmt.Errorf("cannot merge non-CSV files: %s and %s", src, dest)
 }
 
-// Function to merge two CSV files
-func mergeCSVFiles(src string, dest string) error {
-	// Open the source CSV file
-	srcFile, err := os.Open(src)
-	if err != nil {
-		return fmt.Errorf("failed to open source file: %w", err)
-	}
-	defer srcFile.Close()
-
-	// Open the destination CSV file in append mode
-	destFile, err := os.OpenFile(dest, os.O_RDWR|os.O_APPEND, os.ModePerm)
-	if err != nil {
-		return fmt.Errorf("failed to open destination file: %w", err)
-	}
-	defer destFile.Close()
-
-	// Read from the source CSV
-	srcReader := csv.NewReader(srcFile)
-	destReader := csv.NewReader(destFile)
-
-	// Read the headers from both files
-	srcHeader, err := srcReader.Read()
-	if err != nil {
-		return fmt.Errorf("failed to read source file header: %w", err)
-	}
-
-	destHeader, err := destReader.Read()
-	if err != nil {
-		return fmt.Errorf("failed to read destination file header: %w", err)
-	}
-
-	// Ensure headers match
-	if !equalHeaders(srcHeader, destHeader) {
-		return fmt.Errorf("CSV headers do not match: %v != %v", srcHeader, destHeader)
-	}
-
-	// Write the source CSV content to the destination CSV
-	destWriter := csv.NewWriter(destFile)
-	for {
-		record, err := srcReader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return fmt.Errorf("failed to read source CSV content: %w", err)
-		}
-
-		// Write the record to the destination file
-		if err := destWriter.Write(record); err != nil {
-			return fmt.Errorf("failed to write record to destination file: %w", err)
-		}
-	}
-	destWriter.Flush()
-	return destWriter.Error()
-}
-
-// Helper function to check if two CSV headers are equal
-func equalHeaders(header1, header2 []string) bool {
-	if len(header1) != len(header2) {
-		return false
-	}
-	for i := range header1 {
-		if strings.TrimSpace(header1[i]) != strings.TrimSpace(header2[i]) {
-			return false
-		}
-	}
-	return true
-}
-
-// Function to copy a single file from source to destination
+// Function to copy a single file from src to dest
 func copyFile(src string, dest string) error {
-	// Open the source file
 	srcFile, err := os.Open(src)
 	if err != nil {
 		return fmt.Errorf("failed to open source file: %w", err)
 	}
 	defer srcFile.Close()
 
-	// Create the destination file
 	destFile, err := os.Create(dest)
 	if err != nil {
 		return fmt.Errorf("failed to create destination file: %w", err)
 	}
 	defer destFile.Close()
 
-	// Copy the content from source file to destination file
 	_, err = io.Copy(destFile, srcFile)
-	return err
+	if err != nil {
+		return fmt.Errorf("failed to copy file: %w", err)
+	}
+
+	fmt.Printf("Copied %s to %s\n", src, dest)
+	return nil
+}
+
+// Function to merge two CSV files (source into destination)
+func mergeCSVFiles(src string, dest string) error {
+	// Open both files
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("failed to open source file: %w", err)
+	}
+	defer srcFile.Close()
+
+	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("failed to open destination file: %w", err)
+	}
+	defer destFile.Close()
+
+	// Create CSV readers and writer
+	srcReader := csv.NewReader(srcFile)
+	destWriter := csv.NewWriter(destFile)
+
+	// Skip headers in the source file
+	_, err = srcReader.Read() // Assuming both files have headers
+	if err != nil && err != io.EOF {
+		return fmt.Errorf("failed to read source header: %w", err)
+	}
+
+	// Append rows from source to destination
+	for {
+		record, err := srcReader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("failed to read record from source: %w", err)
+		}
+
+		err = destWriter.Write(record)
+		if err != nil {
+			return fmt.Errorf("failed to write record to destination: %w", err)
+		}
+	}
+
+	destWriter.Flush()
+	if err := destWriter.Error(); err != nil {
+		return fmt.Errorf("failed to flush writer: %w", err)
+	}
+
+	fmt.Printf("Merged %s into %s\n", src, dest)
+	return nil
 }
