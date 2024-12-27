@@ -8,7 +8,21 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
+
+func ExcelClear(sourceDir string, destDir string) error {
+	// Get the current timestamp
+	currentTime := time.Now().Format("2006-01-02_15-04-05")
+	destDir = filepath.Join(destDir, currentTime)
+
+	// Ensure the destination directory exists
+	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create destination directory: %w", err)
+	}
+
+	return copyFile(sourceDir, destDir)
+}
 
 func ExcelSumMult(sourceDirs []string, destDir string) error {
 	// Merge each source folder into the destination folder
@@ -66,13 +80,18 @@ func copyOrMerge(src string, dest string) error {
 		return mergeCSVFiles(src, dest)
 	}
 
-	// If dest exists, merge if both are CSV files
+	// If dest exists, merge if both are INI files
 	if filepath.Ext(src) == ".ini" && filepath.Ext(dest) == ".ini" {
 		return mergeINIFiles(src, dest)
 	}
 
+	// If dest exists, merge if both are XLS files
+	if filepath.Ext(src) == ".xls" && filepath.Ext(dest) == ".xls" {
+		return nil
+	}
+
 	// For non-CSV files, return an error or handle differently
-	return fmt.Errorf("cannot merge non-CSV files: %s and %s", src, dest)
+	return fmt.Errorf("cannot merge files: %s and %s", src, dest)
 }
 
 // Function to merge INI files
@@ -142,6 +161,51 @@ func mergeCSVFiles(src string, dest string) error {
 	fmt.Printf("Merged %s into %s\n", src, dest)
 	return nil
 }
+
+// // Function to merge two CSV files (entire content, including headers)
+// func mergeXLSFiles(src string, dest string) error {
+// 	// Open source and destination files
+// 	srcFile, err := os.Open(src)
+// 	if err != nil {
+// 		return fmt.Errorf("failed to open source file: %w", err)
+// 	}
+// 	defer srcFile.Close()
+
+// 	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_WRONLY, os.ModePerm)
+// 	if err != nil {
+// 		return fmt.Errorf("failed to open destination file: %w", err)
+// 	}
+// 	defer destFile.Close()
+
+// 	// Create readers and writer
+// 	srcReader := xlsx.NewReader(srcFile)
+// 	destWriter := xlsx.NewWriter(destFile)
+
+// 	// Append all rows from source to destination
+// 	for {
+// 		record, err := srcReader.Read()
+// 		if err == io.EOF {
+// 			break
+// 		}
+// 		if err != nil {
+// 			fmt.Printf("Skipping invalid row: %v\n", err)
+// 			continue // Skip invalid rows
+// 		}
+
+// 		err = destWriter.Write(record)
+// 		if err != nil {
+// 			return fmt.Errorf("failed to write record to destination: %w", err)
+// 		}
+// 	}
+
+// 	destWriter.Flush()
+// 	if err := destWriter.Error(); err != nil {
+// 		return fmt.Errorf("failed to flush writer: %w", err)
+// 	}
+
+// 	fmt.Printf("Merged %s into %s\n", src, dest)
+// 	return nil
+// }
 
 // Function to copy a single file from src to dest
 func copyFile(src string, dest string) error {
