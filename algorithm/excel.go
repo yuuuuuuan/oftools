@@ -20,9 +20,13 @@ func ExcelClear(sourceDir string, destDir string) error {
 	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
 		return fmt.Errorf("failed to create destination directory: %w", err)
 	}
-
-	return copyFile(sourceDir, destDir)
+	if err := copyFile(sourceDir, destDir); err != nil {
+		return fmt.Errorf("failed to copy destination directory: %w", err)
+	}
+	return removeFiles(sourceDir)
 }
+
+//func ExcelSumSelf
 
 func ExcelSumMult(sourceDirs []string, destDir string) error {
 	// Merge each source folder into the destination folder
@@ -142,6 +146,7 @@ func mergeCSVFiles(src string, dest string) error {
 		if err == io.EOF {
 			break
 		}
+		//if record
 		if err != nil {
 			fmt.Printf("Skipping invalid row: %v\n", err)
 			continue // Skip invalid rows
@@ -161,51 +166,6 @@ func mergeCSVFiles(src string, dest string) error {
 	fmt.Printf("Merged %s into %s\n", src, dest)
 	return nil
 }
-
-// // Function to merge two CSV files (entire content, including headers)
-// func mergeXLSFiles(src string, dest string) error {
-// 	// Open source and destination files
-// 	srcFile, err := os.Open(src)
-// 	if err != nil {
-// 		return fmt.Errorf("failed to open source file: %w", err)
-// 	}
-// 	defer srcFile.Close()
-
-// 	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_WRONLY, os.ModePerm)
-// 	if err != nil {
-// 		return fmt.Errorf("failed to open destination file: %w", err)
-// 	}
-// 	defer destFile.Close()
-
-// 	// Create readers and writer
-// 	srcReader := xlsx.NewReader(srcFile)
-// 	destWriter := xlsx.NewWriter(destFile)
-
-// 	// Append all rows from source to destination
-// 	for {
-// 		record, err := srcReader.Read()
-// 		if err == io.EOF {
-// 			break
-// 		}
-// 		if err != nil {
-// 			fmt.Printf("Skipping invalid row: %v\n", err)
-// 			continue // Skip invalid rows
-// 		}
-
-// 		err = destWriter.Write(record)
-// 		if err != nil {
-// 			return fmt.Errorf("failed to write record to destination: %w", err)
-// 		}
-// 	}
-
-// 	destWriter.Flush()
-// 	if err := destWriter.Error(); err != nil {
-// 		return fmt.Errorf("failed to flush writer: %w", err)
-// 	}
-
-// 	fmt.Printf("Merged %s into %s\n", src, dest)
-// 	return nil
-// }
 
 // Function to copy a single file from src to dest
 func copyFile(src string, dest string) error {
@@ -227,5 +187,35 @@ func copyFile(src string, dest string) error {
 	}
 
 	fmt.Printf("Copied %s to %s\n", src, dest)
+	return nil
+}
+
+func removeFiles(path string) error {
+	// Read the directory contents
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return fmt.Errorf("failed to read directory: %v", err)
+	}
+
+	for _, entry := range entries {
+		entryPath := path + "/" + entry.Name()
+
+		if entry.IsDir() {
+			// If it's a directory, remove it recursively
+			err := os.RemoveAll(entryPath)
+			if err != nil {
+				return fmt.Errorf("failed to delete directory (%s): %v", entryPath, err)
+			}
+			fmt.Printf("Deleted directory: %s\n", entryPath)
+		} else {
+			// If it's a file, delete it directly
+			err := os.Remove(entryPath)
+			if err != nil {
+				return fmt.Errorf("failed to delete file (%s): %v", entryPath, err)
+			}
+			fmt.Printf("Deleted file: %s\n", entryPath)
+		}
+	}
+
 	return nil
 }
