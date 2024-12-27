@@ -92,32 +92,26 @@ func copyFile(src string, dest string) error {
 	return nil
 }
 
-// Function to merge two CSV files (source into destination)
+// Function to merge two CSV files (entire content, including headers)
 func mergeCSVFiles(src string, dest string) error {
-	// Open both files
+	// Open source and destination files
 	srcFile, err := os.Open(src)
 	if err != nil {
 		return fmt.Errorf("failed to open source file: %w", err)
 	}
 	defer srcFile.Close()
 
-	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_RDWR, os.ModePerm)
+	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("failed to open destination file: %w", err)
 	}
 	defer destFile.Close()
 
-	// Create CSV readers and writer
+	// Create readers and writer
 	srcReader := csv.NewReader(srcFile)
 	destWriter := csv.NewWriter(destFile)
 
-	// Skip headers in the source file
-	_, err = srcReader.Read() // Assuming both files have headers
-	if err != nil && err != io.EOF {
-		return fmt.Errorf("failed to read source header: %w", err)
-	}
-
-	// Append rows from source to destination
+	// Append all rows from source to destination
 	for {
 		record, err := srcReader.Read()
 		if err == io.EOF {
