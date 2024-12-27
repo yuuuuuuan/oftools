@@ -118,7 +118,8 @@ func mergeCSVFiles(src string, dest string) error {
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("failed to read record from source: %w", err)
+			fmt.Printf("Skipping invalid row: %v\n", err)
+			continue // Skip invalid rows
 		}
 
 		err = destWriter.Write(record)
