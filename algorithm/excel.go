@@ -77,7 +77,7 @@ func ExcelSumSelf(sourceDir string) error {
 
 		// Move the file
 		targetPath := filepath.Join(targetDir, info.Name())
-		err = copyFile(path, targetPath)
+		err = copyOrMerge(path, targetPath)
 		if err != nil {
 			return fmt.Errorf("failed to move file %s to %s: %v", path, targetPath, err)
 		}
