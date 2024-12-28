@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	JmsServerURL    = "192.168.120.11"
+	JmsServerURL    = "http://192.168.120.11"
 	AccessKeyID     = "28f18d9c-3eab-4506-a2ae-11886e9db7c9"
 	AccessKeySecret = "SOKNq0vCHXl1emQVwcsOP5gQ64FOsrPHopl3"
 )
@@ -59,7 +59,7 @@ func GetUserInfo(jmsurl string, auth *SigAuth) {
 	fmt.Println(string(body))
 }
 
-func Jump(value string) error{
+func JumpGetInfo(value string) error {
 	auth := SigAuth{
 		KeyID:    AccessKeyID,
 		SecretID: AccessKeySecret,
@@ -67,3 +67,12 @@ func Jump(value string) error{
 	GetUserInfo(JmsServerURL, &auth)
 	return nil
 }
+
+// func JumpSignIn(value string) error{
+// 	auth := SigAuth{
+// 		KeyID:    AccessKeyID,
+// 		SecretID: AccessKeySecret,
+// 	}
+// 	_, err := auth.Sign()
+// 	return nil
+// }
