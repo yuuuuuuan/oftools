@@ -26,8 +26,6 @@ func ExcelClear(sourceDir string, destDir string) error {
 	return removeFiles(sourceDir)
 }
 
-//func ExcelSumSelf
-
 func ExcelSumMult(sourceDirs []string, destDir string) error {
 	// Merge each source folder into the destination folder
 	for _, sourceDir := range sourceDirs {
@@ -37,6 +35,62 @@ func ExcelSumMult(sourceDirs []string, destDir string) error {
 			log.Fatal("Error merging folder:", err)
 		}
 	}
+	return ExcelSumSelf(destDir)
+}
+
+// ExcelSumSelf organizes `.csv` and `.txt` files into separate folders `sumcsv` and `sumtxt`.
+func ExcelSumSelf(sourceDir string) error {
+	// Define the target directories
+	sumCSVDir := filepath.Join(sourceDir, "sumcsv")
+	sumTXTDir := filepath.Join(sourceDir, "sumtxt")
+
+	// Create target directories if they don't exist
+	if err := os.MkdirAll(sumCSVDir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %v", sumCSVDir, err)
+	}
+	if err := os.MkdirAll(sumTXTDir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %v", sumTXTDir, err)
+	}
+
+	// Walk through the source directory
+	err := filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return fmt.Errorf("error accessing path %s: %v", path, err)
+		}
+
+		// Skip directories and the target folders
+		if info.IsDir() || path == sumCSVDir || path == sumTXTDir {
+			return nil
+		}
+
+		// Determine the file type and move to the corresponding folder
+		ext := strings.ToLower(filepath.Ext(info.Name()))
+		var targetDir string
+		if ext == ".csv" {
+			targetDir = sumCSVDir
+		} else if ext == ".txt" {
+			targetDir = sumTXTDir
+		} else {
+			// Ignore unsupported file types
+			return nil
+		}
+
+		// Move the file
+		targetPath := filepath.Join(targetDir, info.Name())
+		err = copyFile(path, targetPath)
+		if err != nil {
+			return fmt.Errorf("failed to move file %s to %s: %v", path, targetPath, err)
+		}
+		fmt.Printf("Moved file: %s -> %s\n", path, targetPath)
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Files have been organized into sumcsv and sumtxt.")
 	return nil
 }
 
@@ -146,12 +200,16 @@ func mergeCSVFiles(src string, dest string) error {
 		if err == io.EOF {
 			break
 		}
-		//if record
+
 		if err != nil {
 			fmt.Printf("Skipping invalid row: %v\n", err)
 			continue // Skip invalid rows
 		}
-
+		//Skipping Head
+		if record[0] == "No." || record[0] == "" {
+			fmt.Printf("Skipping Head row: %v\n", err)
+			continue // Skip invalid rows
+		}
 		err = destWriter.Write(record)
 		if err != nil {
 			return fmt.Errorf("failed to write record to destination: %w", err)

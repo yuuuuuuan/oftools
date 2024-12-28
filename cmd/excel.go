@@ -45,6 +45,20 @@ var ExcelCommand = &cli.Command{
 		},
 		// Hex to other systems
 		{
+			Name:  "sumself",
+			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				sourceDir := ctx.Args().Get(0)
+				err = algorithm.ExcelSumSelf(sourceDir)
+				if err != nil {
+					return fmt.Errorf("invalid decimal value: %v", err)
+				}
+				return nil
+			},
+		},
+		// Hex to other systems
+		{
 			Name:  "clear",
 			Usage: "Convert a hex value to hexadecimal, binary, and octal",
 			Action: func(ctx *cli.Context) error {
