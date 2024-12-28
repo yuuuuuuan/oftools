@@ -19,6 +19,7 @@ func main() {
 			cmd.VersionCommand, // Register version command
 			cmd.ConvertCommand,
 			cmd.ExcelCommand,
+			cmd.JumpCommand,
 		},
 	}
 
