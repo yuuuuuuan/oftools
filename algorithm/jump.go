@@ -59,7 +59,7 @@ func GetUserInfo(jmsurl string, auth *SigAuth) {
 	fmt.Println(string(body))
 }
 
-func Jump() error {
+func Jump(value string) error{
 	auth := SigAuth{
 		KeyID:    AccessKeyID,
 		SecretID: AccessKeySecret,

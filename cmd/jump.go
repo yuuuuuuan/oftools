@@ -18,8 +18,10 @@ var JumpCommand = &cli.Command{
 			Name:  "getinfo",
 			Usage: "Convert a hex value to hexadecimal, binary, and octal",
 			Action: func(c *cli.Context) error {
-				//var err error
-				err := algorithm.Jump()
+				var err error
+				var value string
+
+				err = algorithm.Jump(value)
 				if err != nil {
 					return fmt.Errorf("invalid decimal value: %v", err)
 				}
