@@ -16,7 +16,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "sumsingle",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Summary a single file to destinationDir",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				sourceDir := ctx.Args().Get(0)
@@ -31,7 +31,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "summult",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Summary sorts of files to destinationDir",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				sourceDirs := ctx.Args().Slice()
@@ -46,7 +46,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "sumself",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Summary a file itself",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				sourceDir := ctx.Args().Get(0)

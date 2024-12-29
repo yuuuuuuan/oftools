@@ -21,7 +21,7 @@ var JumpCommand = &cli.Command{
 				var err error
 				var value string
 
-				err = algorithm.Jump(value)
+				err = algorithm.JumpGetInfo(value)
 				if err != nil {
 					return fmt.Errorf("invalid decimal value: %v", err)
 				}
