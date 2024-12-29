@@ -13,6 +13,7 @@ var VersionCommand = &cli.Command{
 	Usage:   "Prints the version of the app",
 	Action: func(c *cli.Context) error {
 		fmt.Println("oftools version 1.0.0")
+		fmt.Println("made by yuuuuuuan")
 		return nil
 	},
 }

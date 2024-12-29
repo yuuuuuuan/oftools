@@ -60,7 +60,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "clear",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Clear workdir and save files to savedir",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				sourceDir := "D:\\.oftools\\excel\\work"
