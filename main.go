@@ -11,8 +11,9 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name:  "oftools",
-		Usage: "fight the loneliness!",
+		Name:                 "oftools",
+		Usage:                "fight the loneliness!",
+		EnableBashCompletion: true,
 		Commands: []*cli.Command{
 			cmd.GreetCommand,   // Register greet command
 			cmd.CalcCommand,    // Register calc command
