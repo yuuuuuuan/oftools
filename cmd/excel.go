@@ -11,7 +11,7 @@ import (
 var ExcelCommand = &cli.Command{
 	Name:    "excel",
 	Aliases: []string{"e"},
-	Usage:   "Greets the user with the provided name",
+	Usage:   "Deal with Data",
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{

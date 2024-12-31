@@ -1,4 +1,3 @@
-// Golang 示例
 package algorithm
 
 import (
