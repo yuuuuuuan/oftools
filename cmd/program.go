@@ -19,9 +19,9 @@ var ProgramCommand = &cli.Command{
 			Usage: "change the OIS firmware",
 			Action: func(ctx *cli.Context) error {
 				var err error
-				sourceDir := ctx.Args().Get(0)
-				destDir := "D:\\.oftools\\excel\\work"
-				err = algorithm.ExcelSumSinger(sourceDir, destDir)
+				sourceDirs := ctx.Args().Slice()
+				//firewareDir := "D:\\.oftools\\excel\\work"
+				err = algorithm.ExcelSumSinger(sourceDirs)
 				if err != nil {
 					return fmt.Errorf("invalid decimal value: %v", err)
 				}
