@@ -4,16 +4,42 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-func ProgramFirewareSingle(source string, destdirs []string) error {
+func ProgramFirewareSingle(source string) error {
+	var err error
 	root := source + "\\OIS"
 	targets := []string{"A", "B", "C", "D"}
 	// Call the function and retrieve matching paths
 	paths, err := findSpecificPaths(root, targets)
 	if err != nil {
-		fmt.Println("Error:", err)
+		return fmt.Errorf("Error:%e", err)
+	} else {
+		for index, value := range paths {
+			err = moveFirewareFile(value)
+			if err != nil {
+				fmt.Printf("%s Error:Move FirewareFile failed at %d\n", getFunctionName(), index)
+			}
+		}
 	}
+	return nil
+}
+
+func moveFirewareFile(source string) error {
+	var srcPath string
+	var err error
+	fmt.Println("Please input OIS fireware root:")
+	fmt.Scanln(&srcPath)
+	if !strings.HasSuffix(srcPath, ".bin") && !strings.HasSuffix(srcPath, ".hex") {
+		fmt.Printf("%s Error:There is no bin or hex file.\n", getFunctionName())
+	} else {
+		err = copyFile(srcPath, source)
+		if err != nil {
+			fmt.Printf("%s Error:Move file failed.\n", getFunctionName())
+		}
+	}
+	fmt.Printf("%s:move file Successed.\n", getFunctionName())
 	return nil
 }
 

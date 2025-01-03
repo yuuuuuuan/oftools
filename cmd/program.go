@@ -15,13 +15,13 @@ var ProgramCommand = &cli.Command{
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{
-			Name:  "firmware",
+			Name:  "firmwaresingle",
 			Usage: "change the OIS firmware",
 			Action: func(ctx *cli.Context) error {
 				var err error
-				sourceDirs := ctx.Args().Slice()
+				sourceDir := ctx.Args().Get(0)
 				//firewareDir := "D:\\.oftools\\excel\\work"
-				err = algorithm.ExcelSumSinger(sourceDirs)
+				err = algorithm.ProgramFirewareSingle(sourceDir)
 				if err != nil {
 					return fmt.Errorf("invalid decimal value: %v", err)
 				}

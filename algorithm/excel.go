@@ -225,29 +225,6 @@ func mergeCSVFiles(src string, dest string) error {
 	return nil
 }
 
-// Function to copy a single file from src to dest
-func copyFile(src string, dest string) error {
-	srcFile, err := os.Open(src)
-	if err != nil {
-		return fmt.Errorf("failed to open source file: %w", err)
-	}
-	defer srcFile.Close()
-
-	destFile, err := os.Create(dest)
-	if err != nil {
-		return fmt.Errorf("failed to create destination file: %w", err)
-	}
-	defer destFile.Close()
-
-	_, err = io.Copy(destFile, srcFile)
-	if err != nil {
-		return fmt.Errorf("failed to copy file: %w", err)
-	}
-
-	fmt.Printf("Copied %s to %s\n", src, dest)
-	return nil
-}
-
 func removeFiles(path string) error {
 	// Read the directory contents
 	entries, err := os.ReadDir(path)
