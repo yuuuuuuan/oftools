@@ -21,6 +21,7 @@ func main() {
 			cmd.ConvertCommand,
 			cmd.ExcelCommand,
 			cmd.JumpCommand,
+			cmd.ProgramCommand,
 		},
 	}
 
