@@ -55,6 +55,7 @@ func moveFirewareFile(source string) error {
 	var err error
 	fmt.Println("Please input OIS fireware root:")
 	fmt.Scanln(&srcPath)
+	fmt.Printf("You input OIS fireware root is:%s", srcPath)
 	if !strings.HasSuffix(srcPath, ".bin") && !strings.HasSuffix(srcPath, ".hex") {
 		fmt.Printf("%s Error:There is no bin or hex file.\n", getFunctionName())
 	} else {
