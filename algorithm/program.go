@@ -9,6 +9,10 @@ import (
 
 func ProgramFirewareSingle(source string) error {
 	var err error
+	// inputDir ,err := getInputPath()
+	// if err !=nil{
+	// 	return fmt.Errorf("Error:%e", err)
+	// }
 	root := source + "\\OIS"
 	targets := []string{"A", "B", "C", "D"}
 	// Call the function and retrieve matching paths
@@ -21,10 +25,30 @@ func ProgramFirewareSingle(source string) error {
 			if err != nil {
 				fmt.Printf("%s Error:Move FirewareFile failed at %d\n", getFunctionName(), index)
 			}
+			iniFile := findSpecificFile(value)
+			if iniFile != "" {
+				fmt.Printf("%s  %d\n", getFunctionName(), index)
+
+			}
 		}
 	}
 	return nil
 }
+
+// func getInputPath() (string, error) {
+// 	fmt.Println("please input program dir:")
+
+// 	reader := bufio.NewReader(os.Stdin)
+// 	path, _ := reader.ReadString('\n')
+
+// 	path = strings.TrimSpace(path)
+
+// 	if path == "" {
+// 		return "", errors.New("dir is void.")
+// 	}
+
+// 	return path, nil
+// }
 
 func moveFirewareFile(source string) error {
 	var srcPath string
@@ -41,6 +65,25 @@ func moveFirewareFile(source string) error {
 	}
 	fmt.Printf("%s:move file Successed.\n", getFunctionName())
 	return nil
+}
+
+func findSpecificFile(root string) string {
+	lastName := filepath.Base(root)
+	path := root + "\\" + "OIS_FWDownlod_" + lastName + "_OIS_Self.ini"
+	if ifFileExist(path) {
+		return path
+	}
+	return ""
+}
+
+func ifFileExist(path string) bool {
+	_, err := os.Stat(path)
+
+	if os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
 }
 
 // FindSpecificPaths searches for files or directories named A, B, or C in the specified directory
