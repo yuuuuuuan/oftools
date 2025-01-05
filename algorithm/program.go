@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,10 +10,7 @@ import (
 
 func ProgramFirewareSingle(source string) error {
 	var err error
-	// inputDir ,err := getInputPath()
-	// if err !=nil{
-	// 	return fmt.Errorf("Error:%e", err)
-	// }
+	inputDir := getInputPath()
 	root := source + "\\OIS"
 	targets := []string{"A", "B", "C", "D"}
 	// Call the function and retrieve matching paths
@@ -21,7 +19,7 @@ func ProgramFirewareSingle(source string) error {
 		return fmt.Errorf("Error:%e", err)
 	} else {
 		for index, value := range paths {
-			err = moveFirewareFile(value)
+			err = moveFirewareFile(value, inputDir)
 			if err != nil {
 				fmt.Printf("%s Error:Move FirewareFile failed at %d\n", getFunctionName(), index)
 			}
@@ -35,27 +33,27 @@ func ProgramFirewareSingle(source string) error {
 	return nil
 }
 
-// func getInputPath() (string, error) {
-// 	fmt.Println("please input program dir:")
+func getInputPath() string {
+	fmt.Println("please input program dir:")
 
-// 	reader := bufio.NewReader(os.Stdin)
-// 	path, _ := reader.ReadString('\n')
+	reader := bufio.NewReader(os.Stdin)
+	path, _ := reader.ReadString('\n')
 
-// 	path = strings.TrimSpace(path)
+	path = strings.TrimSpace(path)
 
-// 	if path == "" {
-// 		return "", errors.New("dir is void.")
-// 	}
+	if path == "" {
+		return ""
+	}
+	fmt.Printf("Your input program dir:%s", path)
+	return path
+}
 
-// 	return path, nil
-// }
-
-func moveFirewareFile(source string) error {
-	var srcPath string
+func moveFirewareFile(source string, srcPath string) error {
 	var err error
-	fmt.Println("Please input OIS fireware root:")
-	fmt.Scanln(&srcPath)
-	fmt.Printf("You input OIS fireware root is:%s", srcPath)
+	// var srcPath string
+	// fmt.Println("Please input OIS fireware root:")
+	// fmt.Scanln(&srcPath)
+	// fmt.Printf("You input OIS fireware root is:%s", srcPath)
 	if !strings.HasSuffix(srcPath, ".bin") && !strings.HasSuffix(srcPath, ".hex") {
 		fmt.Printf("%s Error:There is no bin or hex file.\n", getFunctionName())
 	} else {
