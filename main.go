@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"oftools/cmd"
 	"os"
 
@@ -28,4 +27,5 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
+
 }
