@@ -1,14 +1,15 @@
 package main
 
 import (
-	"log"
 	"oftools/cmd"
+	"oftools/oflog"
 	"os"
 
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
+	oflog.Init()
 	app := &cli.App{
 		Name:                 "oftools",
 		Usage:                "fight the loneliness!",
@@ -25,7 +26,7 @@ func main() {
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		oflog.Print.Fatal(err)
 	}
 
 }
