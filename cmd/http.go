@@ -14,7 +14,8 @@ var HttpCommand = &cli.Command{
 	Usage:   "Greets the user with the provided name",
 	Action: func(c *cli.Context) error {
 		//var err error
-		err := algorithm.Http()
+		port := c.Args().Get(0)
+		err := algorithm.Http(port)
 		if err != nil {
 			return fmt.Errorf("invalid decimal value: %v", err)
 		}

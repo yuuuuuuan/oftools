@@ -52,7 +52,7 @@ func generateSelfSignedCert() (cert []byte, key []byte, err error) {
 	return certPem, keyPem, nil
 }
 
-func Http() error {
+func Http(port string) error {
 	// 动态生成自签名证书
 	certPem, keyPem, err := generateSelfSignedCert()
 	if err != nil {
@@ -79,13 +79,13 @@ func Http() error {
 	keyFile.Write(keyPem)
 	keyFile.Close()
 
-	// 启动 HTTPS 服务器
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Secure HTTPS Request received!"))
 	})
 
-	fmt.Println("Listening on https://localhost:8443")
-	err = http.ListenAndServeTLS(":8443", certFile.Name(), keyFile.Name(), nil)
+	fmt.Printf("Listening on https://localhost:%s", port)
+	portstring := ":" + port
+	err = http.ListenAndServeTLS(portstring, certFile.Name(), keyFile.Name(), nil)
 	if err != nil {
 		fmt.Printf("Error starting HTTPS server: %v\n", err)
 	}
