@@ -28,5 +28,6 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		oflog.Print.Fatal(err)
 	}
-
+	// oflog.Print.Errorf("Error")
+	// oflog.Print.Infof("Error")
 }
