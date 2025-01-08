@@ -2,9 +2,11 @@ package algorithm
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
 	"log"
+	"oftools/oflog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -96,9 +98,11 @@ func ExcelSumSelf(sourceDir string) error {
 
 // Function to merge folder contents from source to destination
 func ExcelSumSinger(sourceDir string, destDir string) error {
+	oflog.Init()
 	// Walk through the source folder and copy each file/folder to the destination
 	err := filepath.Walk(sourceDir, func(srcPath string, info os.FileInfo, err error) error {
 		if err != nil {
+			oflog.Print.Errorf("Walk through the source folder failed:%v", err)
 			return err
 		}
 
@@ -110,6 +114,7 @@ func ExcelSumSinger(sourceDir string, destDir string) error {
 		if !info.IsDir() {
 			err := copyOrMerge(srcPath, destPath)
 			if err != nil {
+				oflog.Print.Errorf(getFunctionName(), "copyOrMerge failed:%v", err)
 				return err
 			}
 		} else {
@@ -127,6 +132,7 @@ func ExcelSumSinger(sourceDir string, destDir string) error {
 
 // Function to copy or merge files based on their existence
 func copyOrMerge(src string, dest string) error {
+	oflog.Init()
 	// Check if dest file exists
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
 		// If dest does not exist, simply copy the file
@@ -149,7 +155,9 @@ func copyOrMerge(src string, dest string) error {
 	}
 
 	// For non-CSV files, return an error or handle differently
-	return fmt.Errorf("cannot merge files: %s and %s", src, dest)
+	err := errors.New("no supported files")
+	oflog.Print.Errorf("cannot merge files %s to %s:%v", src, dest, err)
+	return err
 }
 
 // Function to merge INI files
@@ -177,16 +185,19 @@ func mergeINIFiles(src string, dest string) error {
 
 // Function to merge two CSV files (entire content, including headers)
 func mergeCSVFiles(src string, dest string) error {
+	oflog.Init()
 	// Open source and destination files
 	srcFile, err := os.Open(src)
 	if err != nil {
-		return fmt.Errorf("failed to open source file: %w", err)
+		oflog.Print.Errorf("failed to open source file: %v", err)
+		return err
 	}
 	defer srcFile.Close()
 
 	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_WRONLY, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("failed to open destination file: %w", err)
+		oflog.Print.Errorf("failed to open destination file: %v", err)
+		return err
 	}
 	defer destFile.Close()
 
@@ -202,34 +213,39 @@ func mergeCSVFiles(src string, dest string) error {
 		}
 
 		if err != nil {
-			fmt.Printf("Skipping invalid row: %v\n", err)
+
+			oflog.Print.Infof("Skipping invalid row: %v", err)
 			continue // Skip invalid rows
 		}
 		//Skipping Head
 		if record[0] == "No." || record[0] == "" {
-			fmt.Printf("Skipping Head row: %v\n", err)
+			oflog.Print.Infof("Skipping Head row: %v", err)
 			continue // Skip invalid rows
 		}
 		err = destWriter.Write(record)
 		if err != nil {
-			return fmt.Errorf("failed to write record to destination: %w", err)
+			oflog.Print.Errorf("failed to write record to destination: %v", err)
+			return err
 		}
 	}
 
 	destWriter.Flush()
 	if err := destWriter.Error(); err != nil {
-		return fmt.Errorf("failed to flush writer: %w", err)
+		oflog.Print.Errorf("failed to flush writer: %v", err)
+		return err
 	}
 
-	fmt.Printf("Merged %s into %s\n", src, dest)
+	oflog.Print.Infof("Merged %s into %s\n", src, dest)
 	return nil
 }
 
 func removeFiles(path string) error {
+	oflog.Init()
 	// Read the directory contents
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		return fmt.Errorf("failed to read directory: %v", err)
+		oflog.Print.Errorf("failed to read directory: %v", err)
+		return err
 	}
 
 	for _, entry := range entries {
@@ -239,16 +255,18 @@ func removeFiles(path string) error {
 			// If it's a directory, remove it recursively
 			err := os.RemoveAll(entryPath)
 			if err != nil {
-				return fmt.Errorf("failed to delete directory (%s): %v", entryPath, err)
+				oflog.Print.Errorf("failed to delete directory (%s): %v", entryPath, err)
+				return err
 			}
-			fmt.Printf("Deleted directory: %s\n", entryPath)
+			oflog.Print.Infof("Deleted directory: %s\n", entryPath)
 		} else {
 			// If it's a file, delete it directly
 			err := os.Remove(entryPath)
 			if err != nil {
-				return fmt.Errorf("failed to delete file (%s): %v", entryPath, err)
+				oflog.Print.Errorf("failed to delete file (%s): %v", entryPath, err)
+				return err
 			}
-			fmt.Printf("Deleted file: %s\n", entryPath)
+			oflog.Print.Infof("Deleted file: %s\n", entryPath)
 		}
 	}
 
