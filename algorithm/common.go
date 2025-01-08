@@ -3,6 +3,7 @@ package algorithm
 import (
 	"fmt"
 	"io"
+	"oftools/oflog"
 	"os"
 	"runtime"
 )
@@ -34,5 +35,40 @@ func copyFile(src string, dest string) error {
 	}
 
 	fmt.Printf("Copied %s to %s\n", src, dest)
+	return nil
+}
+
+func createDir(destDir string) error {
+	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
+		oflog.Print.Errorf("failed to create destination directory")
+		return err
+	}
+	return nil
+}
+
+func readDir(path string) ([]os.DirEntry, error) {
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		oflog.Print.Errorf("failed to read destination directory")
+		return nil, err
+	}
+	return entries, nil
+}
+
+func removePath(path string) error {
+	err := os.RemoveAll(path)
+	if err != nil {
+		oflog.Print.Errorf("failed to remove all directory")
+		return err
+	}
+	return nil
+}
+
+func removeFile(path string) error {
+	err := os.Remove(path)
+	if err != nil {
+		oflog.Print.Errorf("failed to remove file")
+		return err
+	}
 	return nil
 }

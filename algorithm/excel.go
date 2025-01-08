@@ -19,11 +19,13 @@ func ExcelClear(sourceDir string, destDir string) error {
 	destDir = filepath.Join(destDir, currentTime)
 
 	// Ensure the destination directory exists
-	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
-		return fmt.Errorf("failed to create destination directory: %w", err)
+	if err := createDir(destDir); err != nil {
+		oflog.Print.Errorf("%s Error:failed at algorithm.createDir!", getFunctionName())
+		return err
 	}
 	if err := copyFile(sourceDir, destDir); err != nil {
-		return fmt.Errorf("failed to copy destination directory: %w", err)
+		oflog.Print.Errorf("%s Error:failed at algorithm.copyFile!", getFunctionName())
+		return err
 	}
 	return removeFiles(sourceDir)
 }
@@ -242,9 +244,9 @@ func mergeCSVFiles(src string, dest string) error {
 func removeFiles(path string) error {
 	oflog.Init()
 	// Read the directory contents
-	entries, err := os.ReadDir(path)
+	entries, err := readDir(path)
 	if err != nil {
-		oflog.Print.Errorf("failed to read directory: %v", err)
+		oflog.Print.Errorf("%s Error:failed at algorithm.readDir!", getFunctionName())
 		return err
 	}
 
@@ -253,20 +255,20 @@ func removeFiles(path string) error {
 
 		if entry.IsDir() {
 			// If it's a directory, remove it recursively
-			err := os.RemoveAll(entryPath)
+			err := removePath(entryPath)
 			if err != nil {
-				oflog.Print.Errorf("failed to delete directory (%s): %v", entryPath, err)
+				oflog.Print.Errorf("%s Error:failed at algorithm.removePath!", getFunctionName())
 				return err
 			}
-			oflog.Print.Infof("Deleted directory: %s\n", entryPath)
+			oflog.Print.Infof("%s Info:Deleted directory: %s", getFunctionName(), entryPath)
 		} else {
 			// If it's a file, delete it directly
-			err := os.Remove(entryPath)
+			err := removeFile(entryPath)
 			if err != nil {
-				oflog.Print.Errorf("failed to delete file (%s): %v", entryPath, err)
+				oflog.Print.Errorf("%s Error:failed at algorithm.removeFile!", getFunctionName())
 				return err
 			}
-			oflog.Print.Infof("Deleted file: %s\n", entryPath)
+			oflog.Print.Infof("%s Info:Deleted file: %s", getFunctionName(), entryPath)
 		}
 	}
 
