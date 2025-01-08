@@ -40,15 +40,20 @@ func ConvertHexToOthers(hexValue string) (Conversion, error) {
 }
 
 // ConvertDecToOthers converts a decimal value to hex, binary, and octal
-func ConvertDecToOthers(decimalValue int64) (Conversion, error) {
+func ConvertDecToOthers(decimalValue string) (Conversion, error) {
+	value, err := strconv.ParseInt(decimalValue, 10, 64)
+	if err != nil {
+		return Conversion{}, fmt.Errorf("Error:%v", err)
+
+	}
 	// Convert decimal to hex, binary, and octal
-	hexValue := fmt.Sprintf("0x%X", decimalValue)
-	binaryValue := fmt.Sprintf("%b", decimalValue)
-	octalValue := fmt.Sprintf("%o", decimalValue)
+	hexValue := fmt.Sprintf("0x%X", value)
+	binaryValue := fmt.Sprintf("%b", value)
+	octalValue := fmt.Sprintf("%o", value)
 
 	return Conversion{
 		Hex: hexValue,
-		Dec: decimalValue,
+		Dec: value,
 		Bin: binaryValue,
 		Oct: octalValue,
 	}, nil

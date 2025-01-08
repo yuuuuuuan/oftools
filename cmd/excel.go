@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"oftools/algorithm"
+	"oftools/oflog"
 
 	"github.com/urfave/cli/v2"
 )
@@ -19,11 +19,13 @@ var ExcelCommand = &cli.Command{
 			Usage: "Summary a single file to destinationDir",
 			Action: func(ctx *cli.Context) error {
 				var err error
+				oflog.Init()
 				sourceDir := ctx.Args().Get(0)
 				destDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.ExcelSumSinger(sourceDir, destDir)
 				if err != nil {
-					return fmt.Errorf("invalid decimal value: %v", err)
+					oflog.Print.Fatalf("Function start failed at algorithm.ExcelSumSinger!")
+					return err
 				}
 				return nil
 			},
@@ -38,7 +40,8 @@ var ExcelCommand = &cli.Command{
 				destDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.ExcelSumMult(sourceDirs, destDir)
 				if err != nil {
-					return fmt.Errorf("invalid decimal value: %v", err)
+					oflog.Print.Fatalf("Function start failed at algorithm.ExcelSumMult!")
+					return err
 				}
 				return nil
 			},
@@ -52,7 +55,8 @@ var ExcelCommand = &cli.Command{
 				sourceDir := ctx.Args().Get(0)
 				err = algorithm.ExcelSumSelf(sourceDir)
 				if err != nil {
-					return fmt.Errorf("invalid decimal value: %v", err)
+					oflog.Print.Fatalf("Function start failed at algorithm.ExcelSumSelf!")
+					return err
 				}
 				return nil
 			},
@@ -67,7 +71,8 @@ var ExcelCommand = &cli.Command{
 				destDir := "D:\\.oftools\\excel\\save"
 				err = algorithm.ExcelClear(sourceDir, destDir)
 				if err != nil {
-					return fmt.Errorf("invalid decimal value: %v", err)
+					oflog.Print.Fatalf("Function start failed at algorithm.ExcelClear!")
+					return err
 				}
 				return nil
 			},

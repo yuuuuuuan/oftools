@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"oftools/algorithm"
+	"oftools/oflog"
 
 	"github.com/urfave/cli/v2"
 )
@@ -14,10 +14,12 @@ var HttpCommand = &cli.Command{
 	Usage:   "Greets the user with the provided name",
 	Action: func(c *cli.Context) error {
 		//var err error
+		oflog.Init()
 		port := c.Args().Get(0)
 		err := algorithm.Http(port)
 		if err != nil {
-			return fmt.Errorf("invalid decimal value: %v", err)
+			oflog.Print.Fatalf("Function start failed at algorithm.Http!")
+			return err
 		}
 		return nil
 	},

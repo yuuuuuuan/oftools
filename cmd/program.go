@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"oftools/algorithm"
+	"oftools/oflog"
 
 	"github.com/urfave/cli/v2"
 )
@@ -19,11 +19,13 @@ var ProgramCommand = &cli.Command{
 			Usage: "change the OIS firmware",
 			Action: func(ctx *cli.Context) error {
 				var err error
+				oflog.Init()
 				sourceDir := ctx.Args().Get(0)
 				//firewareDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.ProgramFirewareSingle(sourceDir)
 				if err != nil {
-					return fmt.Errorf("invalid decimal value: %v", err)
+					oflog.Print.Fatalf("Function start failed at algorithm.ProgramFirewareSingle!")
+					return err
 				}
 				return nil
 			},

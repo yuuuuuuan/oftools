@@ -29,6 +29,24 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		oflog.Print.Fatal(err)
 	}
+	// err1 := error1()
+	// if err1 != nil {
+	// 	oflog.Print.Errorf("%s:something wrong at %v", getFunctionName(), err1)
+	// }
 	// oflog.Print.Errorf("Error")
 	// oflog.Print.Infof("Error")
 }
+
+// func error1() error {
+// 	oflog.Init()
+// 	err := errors.New("error:err1")
+// 	oflog.Print.Errorf("%s:something wrong:%v", getFunctionName(), err)
+// 	return err
+// }
+
+// // GetFunctionName retrieves the name of the currently executing function
+// func getFunctionName() string {
+// 	pc, _, _, _ := runtime.Caller(1)
+// 	funcObj := runtime.FuncForPC(pc)
+// 	return funcObj.Name()
+// }

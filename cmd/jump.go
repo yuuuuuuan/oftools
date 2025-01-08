@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"oftools/algorithm"
+	"oftools/oflog"
 
 	"github.com/urfave/cli/v2"
 )
@@ -20,10 +20,11 @@ var JumpCommand = &cli.Command{
 			Action: func(c *cli.Context) error {
 				var err error
 				var value string
-
+				oflog.Init()
 				err = algorithm.JumpGetInfo(value)
 				if err != nil {
-					return fmt.Errorf("invalid decimal value: %v", err)
+					oflog.Print.Fatalf("Function start failed at algorithm.JumpGetInfo!")
+					return err
 				}
 				return nil
 			},
