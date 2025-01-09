@@ -60,13 +60,14 @@ func ExcelSumSelf(sourceDir string) error {
 	// Walk through the source directory
 	err := filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			oflog.Print.Errorf("Walk through the source folder failed:%v", err)
+			oflog.Print.Errorf("Walk through the source folder failed.")
 			return err
 		}
 
 		// Skip directories and the target folders
 		if info.IsDir() || path == sumCSVDir || path == sumTXTDir {
-			return nil
+			oflog.Print.Infof("Skipping directories and the target folders.")
+			return err
 		}
 
 		// Determine the file type and move to the corresponding folder
