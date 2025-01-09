@@ -165,6 +165,10 @@ func copyOrMerge(src string, dest string) error {
 		return nil
 	}
 
+	// If dest exists, merge if both are XLS files
+	if filepath.Ext(src) == ".txt" && filepath.Ext(dest) == ".txt" {
+		return nil
+	}
 	// For non-CSV files, return an error or handle differently
 	oflog.Print.Errorf("no supported files %s.", src)
 	return nil

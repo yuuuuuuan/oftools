@@ -20,6 +20,10 @@ var ExcelCommand = &cli.Command{
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()
+				if ctx.Args().Len() != 1 {
+					oflog.Print.Fatalf("Please input a single file Dir!")
+					return nil
+				}
 				sourceDir := ctx.Args().Get(0)
 				destDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.ExcelSumSinger(sourceDir, destDir)
@@ -36,6 +40,10 @@ var ExcelCommand = &cli.Command{
 			Usage: "Summary sorts of files to destinationDir",
 			Action: func(ctx *cli.Context) error {
 				var err error
+				if ctx.Args().Len() == 0 {
+					oflog.Print.Fatalf("Please input one or sorts of files Dir!")
+					return nil
+				}
 				sourceDirs := ctx.Args().Slice()
 				destDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.ExcelSumMult(sourceDirs, destDir)
@@ -52,6 +60,10 @@ var ExcelCommand = &cli.Command{
 			Usage: "Summary a file itself",
 			Action: func(ctx *cli.Context) error {
 				var err error
+				if ctx.Args().Len() != 1 {
+					oflog.Print.Fatalf("Please input a single file Dir!")
+					return nil
+				}
 				sourceDir := ctx.Args().Get(0)
 				err = algorithm.ExcelSumSelf(sourceDir)
 				if err != nil {

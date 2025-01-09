@@ -35,8 +35,7 @@ func copyFile(src string, dest string) error {
 		oflog.Print.Errorf("failed to copy file.")
 		return err
 	}
-
-	oflog.Print.Infof("Copied %s to %s", src, dest)
+	//oflog.Print.Infof("Copied %s to %s", src, dest)
 	return nil
 }
 

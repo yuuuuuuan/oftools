@@ -50,3 +50,5 @@ func main() {
 // 	funcObj := runtime.FuncForPC(pc)
 // 	return funcObj.Name()
 // }
+//GOOS=windows GOARCH=amd64 go build -o oftools.exe
+//go build main.go
