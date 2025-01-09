@@ -2,10 +2,8 @@ package algorithm
 
 import (
 	"encoding/csv"
-	"errors"
 	"fmt"
 	"io"
-	"log"
 	"oftools/oflog"
 	"os"
 	"path/filepath"
@@ -36,7 +34,8 @@ func ExcelSumMult(sourceDirs []string, destDir string) error {
 		fmt.Printf("Merging folder: %s\n", sourceDir)
 		err := ExcelSumSinger(sourceDir, destDir)
 		if err != nil {
-			log.Fatal("Error merging folder:", err)
+			oflog.Print.Fatalf("%s Error:failed at algorithm.ExcelSumSinger!", getFunctionName())
+			return err
 		}
 	}
 	return ExcelSumSelf(destDir)
@@ -50,16 +49,19 @@ func ExcelSumSelf(sourceDir string) error {
 
 	// Create target directories if they don't exist
 	if err := os.MkdirAll(sumCSVDir, 0755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %v", sumCSVDir, err)
+		oflog.Print.Errorf("failed to create directory %s", sumCSVDir)
+		return err
 	}
 	if err := os.MkdirAll(sumTXTDir, 0755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %v", sumTXTDir, err)
+		oflog.Print.Errorf("failed to create directory %s", sumCSVDir)
+		return err
 	}
 
 	// Walk through the source directory
 	err := filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return fmt.Errorf("error accessing path %s: %v", path, err)
+			oflog.Print.Errorf("Walk through the source folder failed:%v", err)
+			return err
 		}
 
 		// Skip directories and the target folders
@@ -83,9 +85,10 @@ func ExcelSumSelf(sourceDir string) error {
 		targetPath := filepath.Join(targetDir, info.Name())
 		err = copyOrMerge(path, targetPath)
 		if err != nil {
-			return fmt.Errorf("failed to move file %s to %s: %v", path, targetPath, err)
+			oflog.Print.Errorf("%s Error:failed at algorithm.copyOrMerge!", getFunctionName())
+			return err
 		}
-		fmt.Printf("Moved file: %s -> %s\n", path, targetPath)
+		oflog.Print.Infof("Moved file: %s -> %s", path, targetPath)
 
 		return nil
 	})
@@ -94,7 +97,7 @@ func ExcelSumSelf(sourceDir string) error {
 		return err
 	}
 
-	fmt.Println("Files have been organized into sumcsv and sumtxt.")
+	oflog.Print.Infof("Files have been organized into sumcsv and sumtxt.")
 	return nil
 }
 
@@ -116,20 +119,25 @@ func ExcelSumSinger(sourceDir string, destDir string) error {
 		if !info.IsDir() {
 			err := copyOrMerge(srcPath, destPath)
 			if err != nil {
-				oflog.Print.Errorf(getFunctionName(), "copyOrMerge failed:%v", err)
+				oflog.Print.Errorf("%s Error:failed at algorithm.copyOrMerge!", getFunctionName())
 				return err
 			}
 		} else {
 			// If it's a directory, create the directory in the destination
-			err := os.MkdirAll(destPath, os.ModePerm)
+			err := createDir(destPath)
 			if err != nil {
+				oflog.Print.Errorf("%s Error:failed at algorithm.createDir!", getFunctionName())
 				return err
 			}
 		}
 		return nil
 	})
+	if err != nil {
+		return err
+	}
 
-	return err
+	oflog.Print.Infof("%s have been organized into %s.", sourceDir, destDir)
+	return nil
 }
 
 // Function to copy or merge files based on their existence
@@ -157,9 +165,8 @@ func copyOrMerge(src string, dest string) error {
 	}
 
 	// For non-CSV files, return an error or handle differently
-	err := errors.New("no supported files")
-	oflog.Print.Errorf("cannot merge files %s to %s:%v", src, dest, err)
-	return err
+	oflog.Print.Errorf("no supported files %s.", src)
+	return nil
 }
 
 // Function to merge INI files
@@ -191,14 +198,14 @@ func mergeCSVFiles(src string, dest string) error {
 	// Open source and destination files
 	srcFile, err := os.Open(src)
 	if err != nil {
-		oflog.Print.Errorf("failed to open source file: %v", err)
+		oflog.Print.Errorf("failed to open source file: %s", src)
 		return err
 	}
 	defer srcFile.Close()
 
 	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_WRONLY, os.ModePerm)
 	if err != nil {
-		oflog.Print.Errorf("failed to open destination file: %v", err)
+		oflog.Print.Errorf("failed to open destination file: %s", dest)
 		return err
 	}
 	defer destFile.Close()
@@ -216,28 +223,28 @@ func mergeCSVFiles(src string, dest string) error {
 
 		if err != nil {
 
-			oflog.Print.Infof("Skipping invalid row: %v", err)
+			oflog.Print.Infof("Skipping invalid row.")
 			continue // Skip invalid rows
 		}
 		//Skipping Head
 		if record[0] == "No." || record[0] == "" {
-			oflog.Print.Infof("Skipping Head row: %v", err)
+			oflog.Print.Infof("Skipping Head row.")
 			continue // Skip invalid rows
 		}
 		err = destWriter.Write(record)
 		if err != nil {
-			oflog.Print.Errorf("failed to write record to destination: %v", err)
+			oflog.Print.Errorf("failed to write record to destination.")
 			return err
 		}
 	}
 
 	destWriter.Flush()
 	if err := destWriter.Error(); err != nil {
-		oflog.Print.Errorf("failed to flush writer: %v", err)
+		oflog.Print.Errorf("failed to flush writer.")
 		return err
 	}
 
-	oflog.Print.Infof("Merged %s into %s\n", src, dest)
+	oflog.Print.Infof("Merged %s into %s", src, dest)
 	return nil
 }
 
