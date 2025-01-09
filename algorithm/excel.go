@@ -67,7 +67,7 @@ func ExcelSumSelf(sourceDir string) error {
 		// Skip directories and the target folders
 		if info.IsDir() || path == sumCSVDir || path == sumTXTDir {
 			oflog.Print.Infof("Skipping directories and the target folders.")
-			return err
+			return nil
 		}
 
 		// Determine the file type and move to the corresponding folder
