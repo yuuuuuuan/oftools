@@ -226,11 +226,12 @@ func mergeCSVFiles(src string, dest string) error {
 			break
 		}
 
-		if err != nil {
+		// if err != nil {
 
-			oflog.Print.Infof("Skipping invalid row.")
-			continue // Skip invalid rows
-		}
+		// 	oflog.Print.Infof("Skipping invalid row.")
+		// 	continue // Skip invalid rows
+		// }
+		
 		//Skipping Head
 		if record[0] == "No." || record[0] == "" {
 			oflog.Print.Infof("Skipping Head row.")
