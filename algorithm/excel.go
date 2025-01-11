@@ -43,6 +43,7 @@ func ExcelSumMult(sourceDirs []string, destDir string) error {
 
 // ExcelSumSelf organizes `.csv` and `.txt` files into separate folders `sumcsv` and `sumtxt`.
 func ExcelSumSelf(sourceDir string) error {
+	oflog.Print.Debugf("%s ============> Debug", getFunctionName())
 	// Define the target directories
 	sumCSVDir := filepath.Join(sourceDir, "sumcsv")
 	sumTXTDir := filepath.Join(sourceDir, "sumtxt")
@@ -143,6 +144,7 @@ func ExcelSumSinger(sourceDir string, destDir string) error {
 
 // Function to copy or merge files based on their existence
 func copyOrMerge(src string, dest string) error {
+	oflog.Print.Debugf("%s ============> Debug", getFunctionName())
 	oflog.Init()
 	// Check if dest file exists
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
@@ -200,6 +202,7 @@ func mergeINIFiles(src string, dest string) error {
 // Function to merge two CSV files (entire content, including headers)
 func mergeCSVFiles(src string, dest string) error {
 	oflog.Init()
+	oflog.Print.Debugf("%s ============> Debug", getFunctionName())
 	// Open source and destination files
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -231,7 +234,7 @@ func mergeCSVFiles(src string, dest string) error {
 		// 	oflog.Print.Infof("Skipping invalid row.")
 		// 	continue // Skip invalid rows
 		// }
-		
+
 		//Skipping Head
 		if record[0] == "No." || record[0] == "" {
 			oflog.Print.Infof("Skipping Head row.")
@@ -242,6 +245,7 @@ func mergeCSVFiles(src string, dest string) error {
 			oflog.Print.Errorf("failed to write record to destination.")
 			return err
 		}
+		oflog.Print.Infof("Fuse ID %s move success.", record[1])
 	}
 
 	destWriter.Flush()
@@ -250,7 +254,7 @@ func mergeCSVFiles(src string, dest string) error {
 		return err
 	}
 
-	oflog.Print.Infof("Merged %s into %s", src, dest)
+	//oflog.Print.Infof("Merged %s into %s", src, dest)
 	return nil
 }
 
