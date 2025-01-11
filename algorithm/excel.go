@@ -45,8 +45,8 @@ func ExcelSumMult(sourceDirs []string, destDir string) error {
 func ExcelSumSelf(sourceDir string) error {
 	oflog.Print.Debugf("%s ============> Debug", getFunctionName())
 	// Define the target directories
-	sumCSVDir := filepath.Join(sourceDir, "sumcsv")
-	sumTXTDir := filepath.Join(sourceDir, "sumtxt")
+	sumCSVDir := filepath.Join(sourceDir, ".sumcsv")
+	sumTXTDir := filepath.Join(sourceDir, ".sumtxt")
 
 	// Create target directories if they don't exist
 	if err := os.MkdirAll(sumCSVDir, 0755); err != nil {
