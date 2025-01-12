@@ -29,7 +29,9 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		oflog.Print.Fatal(err)
 	}
-	//oflog.Print.Infof("123")
+	// oflog.Print.Infof("123")
+	// oflog.Print.Errorf("123")
+	// oflog.Print.Fatalf("123")
 	// err1 := error1()
 	// if err1 != nil {
 	// 	oflog.Print.Errorf("%s:something wrong at %v", getFunctionName(), err1)

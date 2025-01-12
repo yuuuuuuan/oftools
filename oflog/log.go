@@ -15,13 +15,25 @@ func Init() {
 		ReportCaller:    true,
 		ReportTimestamp: true,
 		TimeFormat:      time.DateTime,
-		Prefix:          "🍪",
+		//Prefix:          "🍪",
 	})
 	styles := log.DefaultStyles()
 	styles.Levels[log.InfoLevel] = lipgloss.NewStyle().
-		SetString("INFO").
+		SetString("INFOF🌟").
 		Padding(0, 1, 0, 1).
-		Background(lipgloss.Color("204")).
-		Foreground(lipgloss.Color("0"))
+		Background(lipgloss.Color("#90EE9080")).
+		Foreground(lipgloss.Color("#006400FF")).Bold(true)
+
+	styles.Levels[log.ErrorLevel] = lipgloss.NewStyle().
+		SetString("ERROR🔥").
+		Padding(0, 1, 0, 1).
+		Background(lipgloss.Color("#FF0000FF")).
+		Foreground(lipgloss.Color("#00FFFF00")).Bold(true)
+
+	styles.Levels[log.FatalLevel] = lipgloss.NewStyle().
+		SetString("FATAL⚡️").
+		Padding(0, 1, 0, 1).
+		Background(lipgloss.Color("#000000FF")).
+		Foreground(lipgloss.Color("#00FFFF00")).Bold(true)
 	Print.SetStyles(styles)
 }
