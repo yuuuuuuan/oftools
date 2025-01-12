@@ -11,7 +11,8 @@ import (
 var HttpCommand = &cli.Command{
 	Name:    "http",
 	Aliases: []string{"ht"},
-	Usage:   "Greets the user with the provided name",
+	Usage:   "🍀 Greets the user with the provided name",
+	HideHelpCommand:      true,
 	Action: func(c *cli.Context) error {
 		//var err error
 		oflog.Init()

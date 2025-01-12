@@ -10,7 +10,8 @@ import (
 var CalcCommand = &cli.Command{
 	Name:    "calc",
 	Aliases: []string{"cal"},
-	Usage:   "Performs basic arithmetic operations (add, subtract, multiply, divide)",
+	Usage:   "🚀 Performs basic arithmetic operations (add, subtract, multiply, divide)",
+	HideHelpCommand:      true,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:     "operation",

@@ -10,7 +10,8 @@ import (
 var GreetCommand = &cli.Command{
 	Name:    "greet",
 	Aliases: []string{"g"},
-	Usage:   "Greets the user with the provided name",
+	Usage:   "🌙 Greets the user with the provided name",
+	HideHelpCommand:      true,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:     "name",

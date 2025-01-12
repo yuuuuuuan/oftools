@@ -11,7 +11,8 @@ import (
 var JumpCommand = &cli.Command{
 	Name:    "jump",
 	Aliases: []string{"j"},
-	Usage:   "Greets the user with the provided name",
+	Usage:   "💖 Greets the user with the provided name",
+	HideHelpCommand:      true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{

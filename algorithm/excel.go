@@ -31,7 +31,7 @@ func ExcelClear(sourceDir string, destDir string) error {
 func ExcelSumMult(sourceDirs []string, destDir string) error {
 	// Merge each source folder into the destination folder
 	for _, sourceDir := range sourceDirs {
-		fmt.Printf("Merging folder: %s\n", sourceDir)
+		oflog.Print.Infof("%s:Merging folder: %s", getFunctionName(), sourceDir)
 		err := ExcelSumSinger(sourceDir, destDir)
 		if err != nil {
 			oflog.Print.Fatalf("%s Error:failed at algorithm.ExcelSumSinger!", getFunctionName())

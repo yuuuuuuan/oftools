@@ -35,5 +35,11 @@ func Init() {
 		Padding(0, 1, 0, 1).
 		Background(lipgloss.Color("#000000FF")).
 		Foreground(lipgloss.Color("#00FFFF00")).Bold(true)
+
+	styles.Levels[log.WarnLevel] = lipgloss.NewStyle().
+		SetString("Powered by yuuuuuuan🍪").
+		Padding(0, 1, 0, 1).
+		Background(lipgloss.Color("#000000FF")).
+		Foreground(lipgloss.Color("#00FFFF00")).Bold(true)
 	Print.SetStyles(styles)
 }

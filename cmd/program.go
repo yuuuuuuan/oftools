@@ -11,7 +11,8 @@ import (
 var ProgramCommand = &cli.Command{
 	Name:    "program",
 	Aliases: []string{"p"},
-	Usage:   "Deal with Program",
+	Usage:   "🦄 Deal with Program",
+	HideHelpCommand:      true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{

@@ -11,7 +11,8 @@ import (
 var ConvertCommand = &cli.Command{
 	Name:    "convert",
 	Aliases: []string{"c"},
-	Usage:   "Convert hex to dec",
+	Usage:   "🐱 Convert hex to dec",
+	HideHelpCommand:      true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{

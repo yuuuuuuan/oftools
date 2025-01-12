@@ -14,6 +14,7 @@ func main() {
 		Name:                 "oftools",
 		Usage:                "fight the loneliness!",
 		EnableBashCompletion: true,
+		HideHelpCommand:      true,
 		Commands: []*cli.Command{
 			cmd.GreetCommand,   // Register greet command
 			cmd.CalcCommand,    // Register calc command

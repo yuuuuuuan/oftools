@@ -7,16 +7,18 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// 🎉🌟🐱🚀🍕🍀💖🦄🌸💫🌙🌿🍓⚡️🎶🍩🎮🦋🎯🎤💎🍒🏞️🎀🛸🎠🍿👑🐾🌈🔥🧩🍔🍉🎨🍭🌻🎡✨🍄🎈📚🌍🎧🍪🍊🍍🍎🍑🍒🍓🍉🍇🍈🍋🍌🍍🍔🌭🍟🍕🌮🥗🍣🍜🍱🍘🍫🍬🍪🍩🥞🍦🍧🍨🍮🍿🎲🎯🧸🎮🖼️🛸🚲🚗🛳️🏖️⛷️⚽🏀🎾🏈⚾🥎
 // GreetCommand is a simple command to greet the user.
 var ExcelCommand = &cli.Command{
 	Name:    "excel",
 	Aliases: []string{"e"},
-	Usage:   "Deal with Data",
+	Usage:   "🎉 Deal with Data",
+	HideHelpCommand:      true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{
 			Name:  "sumsingle",
-			Usage: "Summary a single file to destinationDir",
+			Usage: "🌸 Summary a single file to destinationDir",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()
@@ -37,7 +39,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "summult",
-			Usage: "Summary sorts of files to destinationDir",
+			Usage: "💫 Summary sorts of files to destinationDir",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				if ctx.Args().Len() == 0 {
@@ -57,7 +59,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "sumself",
-			Usage: "Summary a file itself",
+			Usage: "🌿 Summary a file itself",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				if ctx.Args().Len() != 1 {
@@ -76,7 +78,7 @@ var ExcelCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "clear",
-			Usage: "Clear workdir and save files to savedir",
+			Usage: "🍓 Clear workdir and save files to savedir",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				sourceDir := "D:\\.oftools\\excel\\work"
