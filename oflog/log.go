@@ -12,7 +12,7 @@ var Print *log.Logger
 
 func Init() {
 	Print = log.NewWithOptions(os.Stderr, log.Options{
-		ReportCaller:    true,
+		//ReportCaller:    true,
 		ReportTimestamp: true,
 		TimeFormat:      time.DateTime,
 		//Prefix:          "🍪",
