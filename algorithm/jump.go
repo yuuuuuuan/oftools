@@ -1,11 +1,13 @@
 package algorithm
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"oftools/oflog"
 	"time"
 
 	"gopkg.in/twindagger/httpsig.v1"
@@ -20,6 +22,54 @@ const (
 type SigAuth struct {
 	KeyID    string
 	SecretID string
+}
+
+func JumpUpdateToken() error {
+	// Define the request body data
+	data := map[string]string{
+		"username": "NF3266",
+		"password": "Zhy1395131175",
+	}
+
+	// Marshal the data into JSON format
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		oflog.Print.Errorf("Convert to json Data failed.")
+		return err
+	}
+
+	// Create a new POST request
+	req, err := http.NewRequest("POST", "https://blj.ofilm.com/api/v1/authentication/auth/", bytes.NewBuffer(jsonData))
+	if err != nil {
+		oflog.Print.Errorf("New Request failed.")
+		return err
+	}
+
+	// Set the request header
+	req.Header.Set("Content-Type", "application/json")
+
+	// Create HTTP client and send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		oflog.Print.Errorf("Get resp failed.")
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Error reading response: %v", err)
+	}
+
+	// Print the response content
+	if resp.StatusCode == http.StatusOK {
+		fmt.Println("Response:", string(body))
+	} else {
+		fmt.Printf("Request failed with status %s\n", resp.Status)
+	}
+	return nil
 }
 
 func (auth *SigAuth) Sign(r *http.Request) error {

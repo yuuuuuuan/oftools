@@ -16,13 +16,13 @@ var JumpCommand = &cli.Command{
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{
-			Name:  "getinfo",
+			Name:  "update",
 			Usage: "Convert a hex value to hexadecimal, binary, and octal",
 			Action: func(c *cli.Context) error {
 				var err error
-				var value string
+				//var value string
 				oflog.Init()
-				err = algorithm.JumpGetInfo(value)
+				err = algorithm.JumpUpdateToken()
 				if err != nil {
 					oflog.Print.Fatalf("Function start failed at algorithm.JumpGetInfo!")
 					return err
