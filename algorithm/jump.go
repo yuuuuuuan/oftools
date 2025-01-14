@@ -67,6 +67,7 @@ func JumpUpdateToken() error {
 	if resp.StatusCode == http.StatusOK {
 		fmt.Println("Response:", string(body))
 	} else {
+		fmt.Printf("Request failed %s\n", resp.Body)
 		fmt.Printf("Request failed with status %s\n", resp.Status)
 	}
 	return nil
