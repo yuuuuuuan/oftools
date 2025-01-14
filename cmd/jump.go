@@ -30,5 +30,22 @@ var JumpCommand = &cli.Command{
 				return nil
 			},
 		},
+
+		// Hex to other systems
+		{
+			Name:  "server",
+			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Action: func(c *cli.Context) error {
+				var err error
+				//var value string
+				oflog.Init()
+				err = algorithm.JumpServer()
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.JumpGetInfo!")
+					return err
+				}
+				return nil
+			},
+		},
 	},
 }
