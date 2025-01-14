@@ -54,7 +54,9 @@ func JumpUpdateToken() error {
 		return err
 	}
 	defer resp.Body.Close()
-	oflog.Print.Infof("%s.", resp.Body)
+	fmt.Printf("%+v\n", resp)
+	fmt.Printf("%#v\n", resp) 
+
 	// // Read the response body
 	// body, err := io.ReadAll(resp.Body)
 	// if err != nil {
