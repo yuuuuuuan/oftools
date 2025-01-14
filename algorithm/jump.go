@@ -4,13 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
-	"log"
 	"net/http"
 	"oftools/oflog"
-	"time"
-
-	"gopkg.in/twindagger/httpsig.v1"
 )
 
 const (
@@ -31,15 +26,18 @@ func JumpUpdateToken() error {
 		"password": "Zhy1395131175",
 	}
 
+	// Define the request URL
+	url := "https://blj.ofilm.com/api/v1/authentication/auth/"
+
 	// Marshal the data into JSON format
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		oflog.Print.Errorf("Convert to json Data failed.")
 		return err
 	}
-
+	oflog.Print.Infof("%s", jsonData)
 	// Create a new POST request
-	req, err := http.NewRequest("POST", "https://blj.ofilm.com/api/v1/authentication/auth/", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		oflog.Print.Errorf("New Request failed.")
 		return err
@@ -47,7 +45,7 @@ func JumpUpdateToken() error {
 
 	// Set the request header
 	req.Header.Set("Content-Type", "application/json")
-
+	fmt.Printf("Request %s\n", req.Header)
 	// Create HTTP client and send the request
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -56,73 +54,19 @@ func JumpUpdateToken() error {
 		return err
 	}
 	defer resp.Body.Close()
+	oflog.Print.Infof("%s.", resp.Body)
+	// // Read the response body
+	// body, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	log.Fatalf("Error reading response: %v", err)
+	// }
 
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading response: %v", err)
-	}
-
-	// Print the response content
-	if resp.StatusCode == http.StatusOK {
-		fmt.Println("Response:", string(body))
-	} else {
-		fmt.Printf("Request failed %s\n", resp.Body)
-		fmt.Printf("Request failed with status %s\n", resp.Status)
-	}
+	// // Print the response content
+	// if resp.StatusCode == http.StatusOK {
+	// 	fmt.Println("Response:", string(body))
+	// } else {
+	// 	fmt.Printf("Request failed %s\n", resp.Body)
+	// 	fmt.Printf("Request failed with status %s\n", resp.Status)
+	// }
 	return nil
 }
-
-func (auth *SigAuth) Sign(r *http.Request) error {
-	headers := []string{"(request-target)", "date"}
-	signer, err := httpsig.NewRequestSigner(auth.KeyID, auth.SecretID, "hmac-sha256")
-	if err != nil {
-		return err
-	}
-	return signer.SignRequest(r, headers, nil)
-}
-
-func GetUserInfo(jmsurl string, auth *SigAuth) {
-	url := jmsurl + "/api/v1/users/users/"
-	gmtFmt := "Mon, 02 Jan 2006 15:04:05 GMT"
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Add("Date", time.Now().Format(gmtFmt))
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("X-JMS-ORG", "00000000-0000-0000-0000-000000000002")
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := auth.Sign(req); err != nil {
-		log.Fatal(err)
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	json.MarshalIndent(body, "", "    ")
-	fmt.Println(string(body))
-}
-
-func JumpGetInfo(value string) error {
-	auth := SigAuth{
-		KeyID:    AccessKeyID,
-		SecretID: AccessKeySecret,
-	}
-	GetUserInfo(JmsServerURL, &auth)
-	return nil
-}
-
-// func JumpSignIn(value string) error{
-// 	auth := SigAuth{
-// 		KeyID:    AccessKeyID,
-// 		SecretID: AccessKeySecret,
-// 	}
-// 	_, err := auth.Sign()
-// 	return nil
-// }
