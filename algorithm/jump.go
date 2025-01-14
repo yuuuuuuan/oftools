@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"oftools/oflog"
+
 	"github.com/google/uuid"
 )
 
@@ -89,6 +90,32 @@ func JumpServer() error {
 		return err
 	}
 	fmt.Println(string(jsonData))
+
+	// The Bearer Token (replace this with the actual token)
+	bearerToken := "sCROcJ50XPnVIWzEAMJCix2go1tIkaWhbnhm"
+
+	url := "https://blj.ofilm.com/api/v1/authentication/auth/"
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return err
+	}
+
+	// Add Authorization header with Bearer Token
+	req.Header.Add("Authorization", "Bearer "+bearerToken)
+
+	// Send the request (Example: using http.DefaultClient)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return err
+	}
+	defer resp.Body.Close()
+	fmt.Printf("%+v\n", resp)
+	fmt.Printf("%#v\n", resp)
 	return nil
 }
 
