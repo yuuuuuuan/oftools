@@ -24,6 +24,7 @@ func main() {
 			cmd.JumpCommand,
 			cmd.ProgramCommand,
 			cmd.HttpCommand,
+			cmd.SignCommand,
 		},
 	}
 
