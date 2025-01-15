@@ -14,15 +14,15 @@ func SignPingpong() error {
 
 	openids := []string{
 		"olZaE61bCD9kOYCIJTKKfMeQxgsM",
-		"olZaE61bCD9kOYCIJTKKfMe7aB5sZl",
-		"olZaE61bCD9kOYCIJTKKfMeYjVd3F7",
-		"olZaE61bCD9kOYCIJTKKfMehTQw9dZ",
-		"olZaE61bCD9kOYCIJTKKfMe3Fm8u5P",
-		"olZaE61bCD9kOYCIJTKKfMevQ8wQ4p",
-		"olZaE61bCD9kOYCIJTKKfMe6LjgDqU",
-		"olZaE61bCD9kOYCIJTKKfMe1Q2lJ8Y",
-		"olZaE61bCD9kOYCIJTKKfMeZ4f9R1A",
-		"olZaE61bCD9kOYCIJTKKfMeTm5Xq0M",
+		"olZaE61bCD9kOYCIJTKKfMe7aB5s",
+		"olZaE61bCD9kOYCIJTKKfMeYjVd3",
+		"olZaE61bCD9kOYCIJTKKfMehTQw9",
+		"olZaE61bCD9kOYCIJTKKfMe3Fm8u",
+		"olZaE61bCD9kOYCIJTKKfMevQ8wQ",
+		"olZaE61bCD9kOYCIJTKKfMe6LjgD",
+		"olZaE61bCD9kOYCIJTKKfMe1Q2lJ",
+		"olZaE61bCD9kOYCIJTKKfMeZ4f9R",
+		"olZaE61bCD9kOYCIJTKKfMeTm5Xq",
 	}
 
 	// Json Data at req Body
@@ -179,15 +179,15 @@ func SignTest() error {
 
 	openids := []string{
 		"olZaE61bCD9kOYCIJTKKfMeQxgsM",
-		"olZaE61bCD9kOYCIJTKKfMe7aB5sZl",
-		"olZaE61bCD9kOYCIJTKKfMeYjVd3F7",
-		"olZaE61bCD9kOYCIJTKKfMehTQw9dZ",
-		"olZaE61bCD9kOYCIJTKKfMe3Fm8u5P",
-		"olZaE61bCD9kOYCIJTKKfMevQ8wQ4p",
-		"olZaE61bCD9kOYCIJTKKfMe6LjgDqU",
-		"olZaE61bCD9kOYCIJTKKfMe1Q2lJ8Y",
-		"olZaE61bCD9kOYCIJTKKfMeZ4f9R1A",
-		"olZaE61bCD9kOYCIJTKKfMeTm5Xq0M",
+		"olZaE61bCD9kOYCIJTKKfMe7aB5s",
+		"olZaE61bCD9kOYCIJTKKfMeYjVd3",
+		"olZaE61bCD9kOYCIJTKKfMehTQw9",
+		"olZaE61bCD9kOYCIJTKKfMe3Fm8u",
+		"olZaE61bCD9kOYCIJTKKfMevQ8wQ",
+		"olZaE61bCD9kOYCIJTKKfMe6LjgD",
+		"olZaE61bCD9kOYCIJTKKfMe1Q2lJ",
+		"olZaE61bCD9kOYCIJTKKfMeZ4f9R",
+		"olZaE61bCD9kOYCIJTKKfMeTm5Xq",
 	}
 
 	// Json Data at req Body
@@ -330,7 +330,7 @@ func SignTest() error {
 		defer resp.Body.Close()
 
 		// return statusCode
-		oflog.Print.Infof("%s statusCode for openid %s: %d\n", jsonData, openid, resp.StatusCode)
+		oflog.Print.Infof("%s statusCode for openid %s: %d", jsonData, openid, resp.StatusCode)
 		oflog.Print.Infof("Waiting about 3 second.Please do not exit!")
 		time.Sleep(3 * time.Second)
 		// fmt.Println(string(jsonData))
