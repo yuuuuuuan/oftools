@@ -46,7 +46,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "NF3247",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -55,7 +55,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "NF3258",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -64,7 +64,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "N0940570",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -73,7 +73,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "N0940540",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -82,7 +82,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "N0940539",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -91,7 +91,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "N0940572",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -100,7 +100,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "NF3101",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
@@ -109,7 +109,7 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3272",
+			"u_id":    "NF3116",
 			"u_name":  "",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
