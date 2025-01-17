@@ -17,7 +17,7 @@ var SignCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "pingpong",
-			Usage: "change the OIS firmware",
+			Usage: "✨ Sign at Pingpong activity",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()
@@ -34,7 +34,7 @@ var SignCommand = &cli.Command{
 
 		{
 			Name:  "test",
-			Usage: "change the OIS firmware",
+			Usage: "🍄 Test for Signnig at activity",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()

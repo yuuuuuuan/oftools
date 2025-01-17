@@ -8,9 +8,9 @@ import (
 )
 
 // GreetCommand is a simple command to greet the user.
-var HttpCommand = &cli.Command{
-	Name:    "http",
-	Aliases: []string{"ht"},
+var IworkCommand = &cli.Command{
+	Name:    "iwork",
+	Aliases: []string{"i"},
 	Usage:   "🍀 Greets the user with the provided name",
 	HideHelpCommand:      true,
 	Action: func(c *cli.Context) error {
