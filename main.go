@@ -23,7 +23,7 @@ func main() {
 			cmd.ExcelCommand,
 			cmd.JumpCommand,
 			cmd.ProgramCommand,
-			//cmd.HttpCommand,
+			cmd.IworkCommand,
 			cmd.SignCommand,
 		},
 	}

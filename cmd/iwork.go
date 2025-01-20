@@ -9,19 +9,43 @@ import (
 
 // GreetCommand is a simple command to greet the user.
 var IworkCommand = &cli.Command{
-	Name:    "iwork",
-	Aliases: []string{"i"},
-	Usage:   "🍀 Greets the user with the provided name",
-	HideHelpCommand:      true,
-	Action: func(c *cli.Context) error {
-		//var err error
-		oflog.Init()
-		port := c.Args().Get(0)
-		err := algorithm.Http(port)
-		if err != nil {
-			oflog.Print.Fatalf("Function start failed at algorithm.Http!")
-			return err
-		}
-		return nil
+	Name:            "iwork",
+	Aliases:         []string{"i"},
+	Usage:           "🍀 Greets the user with the provided name",
+	HideHelpCommand: true,
+	Subcommands: []*cli.Command{
+		// Hex to other systems
+		{
+			Name:  "get",
+			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Action: func(c *cli.Context) error {
+				var err error
+				//var value string
+				oflog.Init()
+				err = algorithm.IworkGet()
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.IworkGet!")
+					return err
+				}
+				return nil
+			},
+		},
+
+		// Hex to other systems
+		{
+			Name:  "server",
+			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Action: func(c *cli.Context) error {
+				var err error
+				//var value string
+				oflog.Init()
+				err = algorithm.JumpServer()
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.JumpGetInfo!")
+					return err
+				}
+				return nil
+			},
+		},
 	},
 }
