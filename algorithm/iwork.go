@@ -42,7 +42,7 @@ func getNFLinks(url string) ([]string, error) {
 	return nfLinks, nil
 }
 
-func IworkGet() error{
+func IworkGet() error {
 	// Base URL
 	baseURL := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/"
 
