@@ -67,3 +67,29 @@ func IworkGet() error {
 	}
 	return nil
 }
+
+func IworkSent() error {
+	// Base URL
+	baseURL := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/"
+
+	// Starting URL
+	startURL := baseURL + "NF3266"
+
+	// Get all /NF links
+	nfLinks, err := getNFLinks(startURL)
+	if err != nil {
+		log.Fatalf("Error fetching links: %v", err)
+		return err
+	}
+
+	// Print all found links
+	if len(nfLinks) > 0 {
+		fmt.Println("Found the following /NF related links:")
+		for _, link := range nfLinks {
+			fmt.Println(baseURL + link)
+		}
+	} else {
+		fmt.Println("No /NF related links found.")
+	}
+	return nil
+}
