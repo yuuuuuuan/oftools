@@ -25,7 +25,7 @@ var SignCommand = &cli.Command{
 				//firewareDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.SignPingpong()
 				if err != nil {
-					oflog.Print.Fatalf("Function start failed at algorithm.ProgramFirewareSingle!")
+					oflog.Print.Fatalf("Function start failed at algorithm.SignPingpong!")
 					return err
 				}
 				return nil
@@ -42,7 +42,7 @@ var SignCommand = &cli.Command{
 				//firewareDir := "D:\\.oftools\\excel\\work"
 				err = algorithm.SignTest()
 				if err != nil {
-					oflog.Print.Fatalf("Function start failed at algorithm.ProgramFirewareSingle!")
+					oflog.Print.Fatalf("Function start failed at algorithm.SignTest!")
 					return err
 				}
 				return nil
