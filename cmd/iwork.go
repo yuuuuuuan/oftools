@@ -33,15 +33,20 @@ var IworkCommand = &cli.Command{
 
 		// Hex to other systems
 		{
-			Name:  "server",
+			Name:  "sent",
 			Usage: "Convert a hex value to hexadecimal, binary, and octal",
 			Action: func(c *cli.Context) error {
 				var err error
 				//var value string
 				oflog.Init()
-				err = algorithm.JumpServer()
+				if c.Args().Len() != 1 {
+					oflog.Print.Fatalf("Please input a user id.")
+					return nil
+				}
+				user := c.Args().Get(0)
+				err = algorithm.IworkSent(user)
 				if err != nil {
-					oflog.Print.Fatalf("Function start failed at algorithm.JumpGetInfo!")
+					oflog.Print.Fatalf("Function start failed at algorithm.IworkSent!")
 					return err
 				}
 				return nil

@@ -1,7 +1,10 @@
 package algorithm
 
 import (
+	"bytes"
+	"crypto/tls"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"regexp"
@@ -68,28 +71,49 @@ func IworkGet() error {
 	return nil
 }
 
-func IworkSent() error {
-	// Base URL
-	baseURL := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/"
+func IworkSent(user string) error {
 
-	// Starting URL
-	startURL := baseURL + "NF3266"
+	// Define the request URL
+	url := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/" + user
 
-	// Get all /NF links
-	nfLinks, err := getNFLinks(startURL)
+	// Define the request body (empty JSON data)
+	jsonData := []byte(`{}`)
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		log.Fatalf("Error fetching links: %v", err)
-		return err
+		fmt.Println("Error creating request:", err)
+		return nil
 	}
 
-	// Print all found links
-	if len(nfLinks) > 0 {
-		fmt.Println("Found the following /NF related links:")
-		for _, link := range nfLinks {
-			fmt.Println(baseURL + link)
-		}
-	} else {
-		fmt.Println("No /NF related links found.")
+	// Set headers
+	req.Header.Set("Host", "it.ofilm.com")
+	req.Header.Set("Content-Type", "application/json")
+
+	// Skip HTTPS certificate verification (insecure)
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
 	}
+
+	// Send the request
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return nil
+	}
+
+	// Print the response status and body
+	fmt.Printf("Status Code: %d\n", resp.StatusCode)
+	fmt.Printf("Response Body: %s\n", body)
 	return nil
 }
