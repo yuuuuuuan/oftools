@@ -77,6 +77,38 @@ var ExcelCommand = &cli.Command{
 		},
 		// Hex to other systems
 		{
+			Name:  "delfail",
+			Usage: "🎠 Delete repfail and repeat Data",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				sourceDir := "D:\\.oftools\\excel\\work"
+				destDir := "D:\\.oftools\\excel\\save"
+				err = algorithm.ExcelClear(sourceDir, destDir)
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.ExcelClear!")
+					return err
+				}
+				return nil
+			},
+		},
+		// Hex to other systems
+		{
+			Name:  "sumcross",
+			Usage: "🍔 Summary different Data by model ID",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				sourceDir := "D:\\.oftools\\excel\\work"
+				destDir := "D:\\.oftools\\excel\\save"
+				err = algorithm.ExcelClear(sourceDir, destDir)
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.ExcelClear!")
+					return err
+				}
+				return nil
+			},
+		},
+		// Hex to other systems
+		{
 			Name:  "clear",
 			Usage: "🍓 Clear workdir and save files to savedir",
 			Action: func(ctx *cli.Context) error {
