@@ -7,67 +7,50 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"regexp"
+	"net/url"
+
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-// Fetch all /NF links from a given URL
-func getNFLinks(url string) ([]string, error) {
-	// Send HTTP GET request
-	resp, err := http.Get(url)
+func IworkGet() error {
+	// Base URL
+	targetURL := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/"
+
+	// 发送 HTTP 请求
+	resp, err := http.Get(targetURL)
 	if err != nil {
-		return nil, err
+		log.Fatalf("请求失败: %v", err)
 	}
 	defer resp.Body.Close()
 
-	// Check for successful status code
-	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("unable to access %s, status code: %d", url, resp.StatusCode)
-	}
-
-	// Parse the HTML using goquery
+	// 解析 HTML
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return nil, err
+		log.Fatalf("解析 HTML 失败: %v", err)
 	}
 
-	// Use a regular expression to extract all links starting with /NF
-	var nfLinks []string
-	re := regexp.MustCompile(`/NF\d+`)
-	doc.Find("a[href]").Each(func(i int, s *goquery.Selection) {
-		link, exists := s.Attr("href")
-		if exists && re.MatchString(link) {
-			nfLinks = append(nfLinks, link)
+	// 获取所有符合 `/域名/*` 规则的链接
+	fmt.Println("发现的链接:")
+	doc.Find("a").Each(func(index int, element *goquery.Selection) {
+		link, exists := element.Attr("href")
+		if exists {
+			parsedURL, err := url.Parse(link)
+			if err == nil {
+				// 确保链接属于同一域名，并且符合 `/域名/*` 格式
+				if parsedURL.IsAbs() {
+					// 绝对路径直接匹配
+					if parsedURL.Host == "it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/" && parsedURL.Path != "/NF3266" {
+						fmt.Println(parsedURL.String())
+					}
+				} else {
+					// 处理相对路径
+					fullURL := targetURL + parsedURL.Path
+					fmt.Println(fullURL)
+				}
+			}
 		}
 	})
-
-	return nfLinks, nil
-}
-
-func IworkGet() error {
-	// Base URL
-	baseURL := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/"
-
-	// Starting URL
-	startURL := baseURL + "NF3266"
-
-	// Get all /NF links
-	nfLinks, err := getNFLinks(startURL)
-	if err != nil {
-		log.Fatalf("Error fetching links: %v", err)
-		return err
-	}
-
-	// Print all found links
-	if len(nfLinks) > 0 {
-		fmt.Println("Found the following /NF related links:")
-		for _, link := range nfLinks {
-			fmt.Println(baseURL + link)
-		}
-	} else {
-		fmt.Println("No /NF related links found.")
-	}
 	return nil
 }
 
