@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"oftools/oflog"
-	"time"
 )
 
 func SignPingpong() error {
@@ -182,105 +181,99 @@ func SignTest() error {
 		"olZaE61bCD9kOYCIJTKKfMe7aB5s",
 		"olZaE61bCD9kOYCIJTKKfMeYjVd3",
 		"olZaE61bCD9kOYCIJTKKfMehTQw9",
-		"olZaE61bCD9kOYCIJTKKfMe3Fm8u",
-		"olZaE61bCD9kOYCIJTKKfMevQ8wQ",
-		"olZaE61bCD9kOYCIJTKKfMe6LjgD",
-		"olZaE61bCD9kOYCIJTKKfMe1Q2lJ",
-		"olZaE61bCD9kOYCIJTKKfMeZ4f9R",
-		"olZaE61bCD9kOYCIJTKKfMeTm5Xq",
 	}
 
 	// Json Data at req Body
 	data := []map[string]string{
 		{
 			"u_id":    "NF3266",
-			"u_name":  "",
+			"u_name":  "邹航远",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
 			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
+			"content": "wLRJm5Rf",
 		},
 
 		{
 			"u_id":    "NF3272",
-			"u_name":  "",
+			"u_name":  "朱毅林",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
 			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
+			"content": "wLRJm5Rf",
 		},
 
 		{
 			"u_id":    "NF3247",
-			"u_name":  "",
+			"u_name":  "田武超",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
 			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
+			"content": "wLRJm5Rf",
 		},
 
 		{
 			"u_id":    "NF3258",
-			"u_name":  "",
+			"u_name":  "马杰健",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
 			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
+			"content": "wLRJm5Rf",
 		},
 
-		{
-			"u_id":    "N0940570",
-			"u_name":  "",
-			"u_dept":  "影像软件开发课",
-			"u_group": "影像事业部",
-			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
-		},
+		// {
+		// 	"u_id":    "N0940570",
+		// 	"u_name":  "李明",
+		// 	"u_dept":  "影像软件开发课",
+		// 	"u_group": "影像事业部",
+		// 	"u_park":  "南昌未来城",
+		// 	"content": "wLRJm5Rf",
+		// },
 
-		{
-			"u_id":    "N0940540",
-			"u_name":  "",
-			"u_dept":  "影像软件开发课",
-			"u_group": "影像事业部",
-			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
-		},
+		// {
+		// 	"u_id":    "N0940540",
+		// 	"u_name":  "黄安",
+		// 	"u_dept":  "影像软件开发课",
+		// 	"u_group": "影像事业部",
+		// 	"u_park":  "南昌未来城",
+		// 	"content": "wLRJm5Rf",
+		// },
 
-		{
-			"u_id":    "N0940539",
-			"u_name":  "",
-			"u_dept":  "影像软件开发课",
-			"u_group": "影像事业部",
-			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
-		},
+		// {
+		// 	"u_id":    "N0940539",
+		// 	"u_name":  "陈其敏",
+		// 	"u_dept":  "影像软件开发课",
+		// 	"u_group": "影像事业部",
+		// 	"u_park":  "南昌未来城",
+		// 	"content": "wLRJm5Rf",
+		// },
 
-		{
-			"u_id":    "N0940572",
-			"u_name":  "",
-			"u_dept":  "影像软件开发课",
-			"u_group": "影像事业部",
-			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
-		},
+		// {
+		// 	"u_id":    "N0940572",
+		// 	"u_name":  "叶俊旺",
+		// 	"u_dept":  "影像软件开发课",
+		// 	"u_group": "影像事业部",
+		// 	"u_park":  "南昌未来城",
+		// 	"content": "wLRJm5Rf",
+		// },
 
-		{
-			"u_id":    "NF3101",
-			"u_name":  "",
-			"u_dept":  "影像软件开发课",
-			"u_group": "影像事业部",
-			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
-		},
+		// {
+		// 	"u_id":    "NF3101",
+		// 	"u_name":  "万永存",
+		// 	"u_dept":  "影像软件开发课",
+		// 	"u_group": "影像事业部",
+		// 	"u_park":  "南昌未来城",
+		// 	"content": "wLRJm5Rf",
+		// },
 
-		{
-			"u_id":    "NF3116",
-			"u_name":  "",
-			"u_dept":  "影像软件开发课",
-			"u_group": "影像事业部",
-			"u_park":  "南昌未来城",
-			"content": "m8E3XeiQ",
-		},
+		// {
+		// 	"u_id":    "NF3116",
+		// 	"u_name":  "马博",
+		// 	"u_dept":  "影像软件开发课",
+		// 	"u_group": "影像事业部",
+		// 	"u_park":  "南昌未来城",
+		// 	"content": "wLRJm5Rf",
+		// },
 	}
 
 	// convert to json
@@ -330,9 +323,7 @@ func SignTest() error {
 		defer resp.Body.Close()
 
 		// return statusCode
-		oflog.Print.Infof("%s statusCode for openid %s: %d", jsonData, openid, resp.StatusCode)
-		oflog.Print.Infof("Waiting about 3 second.Please do not exit!")
-		time.Sleep(3 * time.Second)
+		oflog.Print.Infof("%s statusCode for openid %s: %d\n", jsonData, openid, resp.StatusCode)
 		// fmt.Println(string(jsonData))
 		// fmt.Println(openid)
 	}
