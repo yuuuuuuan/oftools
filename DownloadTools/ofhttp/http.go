@@ -1,20 +1,18 @@
 package ofhttp
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
-func HttpGetyuanqu() (map[string]interface{}, error) {
+func HttpGetyuanqu() (*http.Response, error) {
 	// 请求的 URL
 	url := "http://192.168.124.126/client/manufactures"
 
 	// 创建一个新的 POST 请求，没有请求体
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		fmt.Printf("Error creating request: %v\n", err)
 		return nil, err
 	}
 
@@ -25,26 +23,16 @@ func HttpGetyuanqu() (map[string]interface{}, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error executing request:", err)
+		fmt.Printf("Error executing request: %v\n", err)
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	// 读取响应体
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading response body: %v", err)
-	}
-
-	// 解析 JSON 响应体
-	var jsonResponse map[string]interface{}
-	err = json.Unmarshal(body, &jsonResponse)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling JSON: %v", err)
-	}
+	// 注意：通常应在函数内部关闭响应体，以防止资源泄漏
+	// 但如果要让调用者处理响应体，应移除以下行
+	// defer resp.Body.Close()
 
 	// 打印响应状态码
-	fmt.Println("Response Status:", resp.Status)
+	fmt.Printf("Response Status: %v\n", resp.Status)
 
-	return jsonResponse, nil
+	return resp, nil
 }

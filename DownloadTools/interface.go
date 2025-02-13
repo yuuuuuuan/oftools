@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"oftools/ofhttp"
+
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
@@ -19,7 +19,9 @@ func main() {
 	// 3. 创建中央部件和布局
 	centralWidget := widgets.NewQWidget(nil, 0)
 	layout := widgets.NewQVBoxLayout2(centralWidget)
-	yuanqu, err := HttpGetyuanqu()
+
+	//yuanqu, err := ofhttp.HttpGetyuanqu()
+
 	// —— 第一行：域（测试/生产/其他） ——
 	domainLabel := widgets.NewQLabel2("域：", nil, 0)
 	domainComboBox := widgets.NewQComboBox(nil)
