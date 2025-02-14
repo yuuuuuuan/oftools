@@ -73,3 +73,5 @@ func main() {
 	// 4. 执行应用
 	app.Exec()
 }
+
+//CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -ldflags "-H windowsgui -s -w" -o DownloadTools.exe interface.go
