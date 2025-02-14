@@ -13,6 +13,19 @@ type Response struct {
 	Data map[string]string `json:"data"`
 }
 
+type ReqStations struct {
+    Category     int    `json:"category"`
+    ManufactureId int    `json:"manufactureId"`
+    ProjName      string `json:"projName"`
+}
+
+type ReqProjects struct {
+    Category     int    `json:"category"`
+    ManufactureId int    `json:"manufactureId"`
+    ProjName      string `json:"projName"`
+    Mp           int    `json:"mp"`
+}
+
 func ConvertRespToStruct(resp *http.Response) (Response, error) {
 	// 检查响应是否为nil
 	if resp == nil {

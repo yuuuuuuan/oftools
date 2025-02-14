@@ -7,6 +7,8 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
+//baseurl := "http://192.168.124.126/client"
+
 func main() {
 	// 1. 初始化QApplication
 	app := widgets.NewQApplication(len(os.Args), os.Args)
@@ -19,8 +21,6 @@ func main() {
 	// 3. 创建中央部件和布局
 	centralWidget := widgets.NewQWidget(nil, 0)
 	layout := widgets.NewQVBoxLayout2(centralWidget)
-
-	//yuanqu, err := ofhttp.HttpGetyuanqu()
 
 	// —— 第一行：域（测试/生产/其他） ——
 	domainLabel := widgets.NewQLabel2("域：", nil, 0)
