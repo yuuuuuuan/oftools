@@ -9,10 +9,15 @@ import (
 
 //baseurl := "http://192.168.124.126/client"
 
+type Interface struct{
+	Yq []int
+	Lx int
+	Cs map[string]string
+}
+
 func main() {
 	// 1. 初始化QApplication
 	app := widgets.NewQApplication(len(os.Args), os.Args)
-
 	// 2. 创建主窗口
 	window := widgets.NewQMainWindow(nil, 0)
 	window.SetWindowTitle("Go + Qt桌面客户端示例")
@@ -21,6 +26,16 @@ func main() {
 	// 3. 创建中央部件和布局
 	centralWidget := widgets.NewQWidget(nil, 0)
 	layout := widgets.NewQVBoxLayout2(centralWidget)
+
+	// —— 第一行：域（测试/生产/其他） ——
+	yuanquLabel := widgets.NewQLabel2("域：", nil, 0)
+	yuanquComboBox := widgets.NewQComboBox(nil)
+	yuanquComboBox.AddItems([]string{"未来城", "二号园区", "其他"})
+
+	yuanquLayout := widgets.NewQHBoxLayout()
+	yuanquLayout.AddWidget(yuanquLabel, 0, 0)
+	yuanquLayout.AddWidget(yuanquComboBox, 0, 0)
+	layout.AddLayout(yuanquLayout, 0)
 
 	// —— 第一行：域（测试/生产/其他） ——
 	domainLabel := widgets.NewQLabel2("域：", nil, 0)
