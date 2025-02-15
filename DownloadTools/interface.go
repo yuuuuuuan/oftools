@@ -3,13 +3,12 @@ package main
 import (
 	"os"
 
-	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
 
 //baseurl := "http://192.168.124.126/client"
 
-type Interface struct{
+type Interface struct {
 	Yq []int
 	Lx int
 	Cs map[string]string
@@ -27,59 +26,18 @@ func main() {
 	centralWidget := widgets.NewQWidget(nil, 0)
 	layout := widgets.NewQVBoxLayout2(centralWidget)
 
-	// —— 第一行：域（测试/生产/其他） ——
-	yuanquLabel := widgets.NewQLabel2("域：", nil, 0)
-	yuanquComboBox := widgets.NewQComboBox(nil)
-	yuanquComboBox.AddItems([]string{"未来城", "二号园区", "其他"})
+	// 创建QComboBox
+	comboBox := widgets.NewQComboBox(nil)
+	//comboBox.SetPlaceholderText("请选择一个选项")
+	comboBox.AddItem("选项1", nil)
+	comboBox.AddItem("选项2", nil)
+	comboBox.AddItem("选项3", nil)
 
-	yuanquLayout := widgets.NewQHBoxLayout()
-	yuanquLayout.AddWidget(yuanquLabel, 0, 0)
-	yuanquLayout.AddWidget(yuanquComboBox, 0, 0)
-	layout.AddLayout(yuanquLayout, 0)
+	// 设置默认选项为“选项1”
+	comboBox.SetCurrentIndex(0)
 
-	// —— 第一行：域（测试/生产/其他） ——
-	domainLabel := widgets.NewQLabel2("域：", nil, 0)
-	domainComboBox := widgets.NewQComboBox(nil)
-	domainComboBox.AddItems([]string{"测试", "生产", "其他"})
-
-	domainLayout := widgets.NewQHBoxLayout()
-	domainLayout.AddWidget(domainLabel, 0, 0)
-	domainLayout.AddWidget(domainComboBox, 0, 0)
-	layout.AddLayout(domainLayout, 0)
-
-	// —— 第二行：名（示例：O1000-N-NULL-CTS） ——
-	fileLabel := widgets.NewQLabel2("名：", nil, 0)
-	fileEdit := widgets.NewQLineEdit(nil)
-	fileEdit.SetText("O1000-N-NULL-CTS")
-
-	fileLayout := widgets.NewQHBoxLayout()
-	fileLayout.AddWidget(fileLabel, 0, 0)
-	fileLayout.AddWidget(fileEdit, 0, 0)
-	layout.AddLayout(fileLayout, 0)
-
-	// —— 第三行：机（示例：OTP1 / NTS） ——
-	choiceLabel := widgets.NewQLabel2("机：", nil, 0)
-	choiceComboBox := widgets.NewQComboBox(nil)
-	choiceComboBox.AddItems([]string{"OTP1", "NTS"})
-
-	choiceLayout := widgets.NewQHBoxLayout()
-	choiceLayout.AddWidget(choiceLabel, 0, 0)
-	choiceLayout.AddWidget(choiceComboBox, 0, 0)
-	layout.AddLayout(choiceLayout, 0)
-
-	// —— 第四行：下载按钮 ——
-	downloadButton := widgets.NewQPushButton2("下载", nil)
-	downloadButton.ConnectClicked(func(bool) {
-		// 这里添加下载逻辑，如HTTP下载或其他操作
-		widgets.QMessageBox_Information(
-			nil,
-			"提示",
-			"开始下载: "+fileEdit.Text(),
-			widgets.QMessageBox__Ok,
-			widgets.QMessageBox__Ok,
-		)
-	})
-	layout.AddWidget(downloadButton, 0, core.Qt__AlignCenter)
+	// 将QComboBox添加到布局中
+	layout.AddWidget(comboBox, 0, 0)
 
 	// 设置中心部件并显示窗口
 	window.SetCentralWidget(centralWidget)
