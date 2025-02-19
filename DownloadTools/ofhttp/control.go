@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -26,7 +27,7 @@ func ConvertRespToJson(resp *http.Response) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("received nil response")
 	}
-	print(result)
+	log.Panicln(result)
 	return result, nil
 }
 

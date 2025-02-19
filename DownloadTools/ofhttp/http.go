@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -29,6 +30,6 @@ func HttpPost(url string, req map[string]interface{}) (*http.Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("req sent failed")
 	}
-	print(response)
+	log.Println(response)
 	return response, nil
 }
