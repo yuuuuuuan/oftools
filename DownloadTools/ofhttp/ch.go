@@ -4,6 +4,6 @@ func SendPostRequset(url string, reqChan chan map[string]interface{}, respChan c
 	for req := range reqChan {
 		resp, _ := HttpPost(url, req)
 		res, _ := ConvertRespToJson(resp)
-		respChan <- res		
+		respChan <- res
 	}
 }
