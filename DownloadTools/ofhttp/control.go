@@ -38,6 +38,8 @@ func ExtractDataAsStringMap(input map[string]interface{}) (map[string]string, er
 	if data, exists := input["data"]; exists {
 		// 尝试将 "data" 转换为 map[string]string 类型
 		if dataMap, ok := data.(map[string]string); ok {
+			log.Println("ExtractDataAsStringMap")
+			log.Println(dataMap)
 			return dataMap, nil
 		}
 		return nil, fmt.Errorf("data is not of type map[string]string")
