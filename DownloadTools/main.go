@@ -51,7 +51,10 @@ func main() {
 	time.Sleep(500 * time.Millisecond)
 	output := <-respChan1
 
-	data, _ := ofhttp.ExtractDataAsStringMap(output)
+	data, err := ofhttp.ExtractDataAsStringMap(output)
+	if err != nil {
+		log.Println(err)
+	}
 	// 提取所有值并存入 []string
 	var values []string
 	for _, value := range data {
