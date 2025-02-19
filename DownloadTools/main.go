@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
+	"oftools/DownloadTools/ofhttp"
 	"os"
 
 	"github.com/therecipe/qt/widgets"
@@ -9,6 +12,7 @@ import (
 //const baseurl = "http://192.168.124.126/client"
 
 func main() {
+	println("0")
 	// 创建应用程序
 	app := widgets.NewQApplication(len(os.Args), os.Args)
 
@@ -25,45 +29,45 @@ func main() {
 	layout := widgets.NewQVBoxLayout()
 	centralWidget.SetLayout(layout)
 
-	// //var reqChan1, respChan1 chan map[string]interface{}
-	// //var reqChan2, respChan2 chan map[string]interface{}
-	// //var reqChan3, respChan3 chan map[string]interface{}
-	// reqChan1 := make(chan map[string]interface{})
-	// respChan1 := make(chan map[string]interface{})
-	// reqChan2 := make(chan map[string]interface{})
-	// respChan2 := make(chan map[string]interface{})
-	// reqChan3 := make(chan map[string]interface{})
-	// respChan3 := make(chan map[string]interface{})
+	//var reqChan1, respChan1 chan map[string]interface{}
+	//var reqChan2, respChan2 chan map[string]interface{}
+	//var reqChan3, respChan3 chan map[string]interface{}
+	reqChan1 := make(chan map[string]interface{})
+	respChan1 := make(chan map[string]interface{})
+	reqChan2 := make(chan map[string]interface{})
+	respChan2 := make(chan map[string]interface{})
+	reqChan3 := make(chan map[string]interface{})
+	respChan3 := make(chan map[string]interface{})
 
-	// go ofhttp.SendPostRequset("/manufactures", reqChan1, respChan1)
-	// go ofhttp.SendPostRequset("/projects", reqChan2, respChan2)
-	// go ofhttp.SendPostRequset("/stations", reqChan3, respChan3)
+	go ofhttp.SendPostRequset("/manufactures", reqChan1, respChan1)
+	go ofhttp.SendPostRequset("/projects", reqChan2, respChan2)
+	go ofhttp.SendPostRequset("/stations", reqChan3, respChan3)
 
-	// var input map[string]interface{}
-	// var err error
-	// input_json := `{}`
-	// err = json.Unmarshal([]byte(input_json), &input)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// reqChan1 <- input
-	// output := <-respChan1
-	// data, _ := ofhttp.ExtractDataAsStringMap(output)
-	// // 提取所有值并存入 []string
-	// var values []string
-	// for _, value := range data {
-	// 	values = append(values, value)
-	// }
-
+	var input map[string]interface{}
+	var err error
+	input_json := `{}`
+	err = json.Unmarshal([]byte(input_json), &input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	reqChan1 <- input
+	output := <-respChan1
+	data, _ := ofhttp.ExtractDataAsStringMap(output)
+	// 提取所有值并存入 []string
+	var values []string
+	for _, value := range data {
+		values = append(values, value)
+	}
+	println("1")
 	domainLabel := widgets.NewQLabel2("园区：", nil, 0)
 	domainComboBox := widgets.NewQComboBox(nil)
-	domainComboBox.AddItems([]string{"Apple", "Banana", "Cherry", "Date", "Elderberry"})
+	domainComboBox.AddItems(values)
 
 	domainLayout := widgets.NewQHBoxLayout()
 	domainLayout.AddWidget(domainLabel, 0, 0)
 	domainLayout.AddWidget(domainComboBox, 0, 0)
 	layout.AddLayout(domainLayout, 0)
-
+	println("2")
 	// 显示窗口
 	window.Show()
 
