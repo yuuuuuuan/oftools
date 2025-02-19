@@ -27,7 +27,8 @@ func ConvertRespToJson(resp *http.Response) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("received nil response")
 	}
-	log.Panicln(result)
+	log.Println("ConvertRespToJson")
+	log.Println(result)
 	return result, nil
 }
 
