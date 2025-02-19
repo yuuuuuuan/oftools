@@ -29,6 +29,6 @@ func HttpPost(url string, req map[string]interface{}) (*http.Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("req sent failed")
 	}
-
+	print(response)
 	return response, nil
 }
