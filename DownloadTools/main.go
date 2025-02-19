@@ -45,14 +45,12 @@ func main() {
 	input_json := `{}`
 	err = json.Unmarshal([]byte(input_json), &input)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	reqChan1 <- input
 	time.Sleep(500 * time.Millisecond)
 	output := <-respChan1
-	if output == nil {
-		print("err")
-	}
+
 	data, _ := ofhttp.ExtractDataAsStringMap(output)
 	// 提取所有值并存入 []string
 	var values []string
