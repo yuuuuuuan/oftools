@@ -55,17 +55,16 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	// 提取所有值并存入 []string
+
 	var values []string
-	for _, value := range data {
-		switch valuetype := value.(type) {
-		case string:
-			values = append(values, valuetype)
-		default:
-			log.Print("other type")
+	for _, v := range data {
+		// 使用类型断言确认值是 string 类型
+		if str, ok := v.(string); ok {
+			values = append(values, str)
 		}
 	}
-	print(values)
+
+	log.Println(values)
 	// domainLabel := widgets.NewQLabel2("园区：", nil, 0)
 	// domainComboBox := widgets.NewQComboBox(nil)
 	// domainComboBox.AddItems(values)
