@@ -2,6 +2,7 @@ package ofhttp
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -26,3 +27,15 @@ func ConvertRespToJson(resp *http.Response) (map[string]interface{}, error) {
 	return result, nil
 }
 
+// 函数从 map[string]interface{} 中提取 "data" 键的值，并返回 map[string]string
+func ExtractDataAsStringMap(input map[string]interface{}) (map[string]string, error) {
+	// 检查 map 中是否有 "data" 键
+	if data, exists := input["data"]; exists {
+		// 尝试将 "data" 转换为 map[string]string 类型
+		if dataMap, ok := data.(map[string]string); ok {
+			return dataMap, nil
+		}
+		return nil, fmt.Errorf("data is not of type map[string]string")
+	}
+	return nil, fmt.Errorf("data key does not exist in map")
+}

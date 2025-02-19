@@ -60,4 +60,5 @@ require (
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/therecipe/qt v0.0.0-20200904063919-c0c124a5770d
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
+	golang.org/x/sync v0.11.0
 )
