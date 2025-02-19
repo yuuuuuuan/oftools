@@ -14,7 +14,7 @@ func ConvertRespToJson(resp *http.Response) (map[string]interface{}, error) {
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("received nil response")
 	}
 
 	// Close the response body to prevent resource leaks
@@ -24,7 +24,7 @@ func ConvertRespToJson(resp *http.Response) (map[string]interface{}, error) {
 	var result map[string]interface{}
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("received nil response")
 	}
 
 	return result, nil

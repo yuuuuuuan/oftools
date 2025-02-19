@@ -6,7 +6,7 @@ import (
 	"oftools/DownloadTools/ofhttp"
 )
 
-//const baseurl = "http://192.168.124.126/client"
+const baseurl = "http://192.168.124.126/client"
 
 func main() {
 	// // 创建应用程序
@@ -35,9 +35,9 @@ func main() {
 	reqChan3 := make(chan map[string]interface{})
 	respChan3 := make(chan map[string]interface{})
 
-	go ofhttp.SendPostRequset("/manufactures", reqChan1, respChan1)
-	go ofhttp.SendPostRequset("/projects", reqChan2, respChan2)
-	go ofhttp.SendPostRequset("/stations", reqChan3, respChan3)
+	go ofhttp.SendPostRequset(baseurl + "/manufactures", reqChan1, respChan1)
+	go ofhttp.SendPostRequset(baseurl + "/projects", reqChan2, respChan2)
+	go ofhttp.SendPostRequset(baseurl + "/stations", reqChan3, respChan3)
 
 	var input map[string]interface{}
 	var err error
@@ -47,9 +47,11 @@ func main() {
 		log.Fatal(err)
 	}
 	reqChan1 <- input
+
 	output := <-respChan1
 	if output == nil {
 		print("err")
+		return
 	}
 	data, _ := ofhttp.ExtractDataAsStringMap(output)
 	// 提取所有值并存入 []string
