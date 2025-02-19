@@ -58,7 +58,12 @@ func main() {
 	// 提取所有值并存入 []string
 	var values []string
 	for _, value := range data {
-		values = append(values, value)
+		switch valuetype := value.(type) {
+		case string:
+			values = append(values, valuetype)
+		default:
+			log.Print("other type")
+		}
 	}
 	print(values)
 	// domainLabel := widgets.NewQLabel2("园区：", nil, 0)
