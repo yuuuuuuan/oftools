@@ -17,7 +17,7 @@ func HttpPost(url string, req map[string]interface{}) (*http.Response, error) {
 	// Create a new POST request
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonReq))
 	if err != nil {
-		return nil, fmt.Errorf("req set failed")
+		return nil, fmt.Errorf("req create failed")
 	}
 
 	// Set the Content-Type header to application/json

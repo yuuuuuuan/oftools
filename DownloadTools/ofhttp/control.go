@@ -9,8 +9,8 @@ import (
 
 func ConvertRespToJson(resp *http.Response) (map[string]interface{}, error) {
 	if resp == nil {
-        return nil, fmt.Errorf("received nil response")
-    }
+		return nil, fmt.Errorf("received nil response")
+	}
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
