@@ -31,7 +31,22 @@ var SignCommand = &cli.Command{
 				return nil
 			},
 		},
-
+		{
+			Name:  "badminton",
+			Usage: "✨ Sign at Badminton activity",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				oflog.Init()
+				//sourceDir := ctx.Args().Get(0)
+				//firewareDir := "D:\\.oftools\\excel\\work"
+				err = algorithm.SignBadminton()
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.SignBadminton!")
+					return err
+				}
+				return nil
+			},
+		},
 		{
 			Name:  "test",
 			Usage: "🍄 Test for Signnig at activity",
