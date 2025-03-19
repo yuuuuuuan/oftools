@@ -5,52 +5,58 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"net/url"
-
-
-	"github.com/PuerkitoBio/goquery"
+	"sync"
+	"time"
 )
 
-func IworkGet() error {
-	// Base URL
-	targetURL := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/"
+// 最大并发数控制
+const maxConcurrency = 50
 
-	// 发送 HTTP 请求
-	resp, err := http.Get(targetURL)
+// 请求函数
+func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}) {
+	defer wg.Done()
+
+	// 控制并发数量
+	sem <- struct{}{}
+	defer func() { <-sem }()
+
+	// 发起 GET 请求并设置超时
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Get(url)
 	if err != nil {
-		log.Fatalf("请求失败: %v", err)
+		fmt.Printf("[!] 请求失败: %s - %s\n", url, err)
+		return
 	}
 	defer resp.Body.Close()
 
-	// 解析 HTML
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
-	if err != nil {
-		log.Fatalf("解析 HTML 失败: %v", err)
+	// 检查状态码并处理响应
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode == 200 && len(body) > 100 {
+		fmt.Printf("[+] 有效 URL: %s\n", url)
+	}
+}
+
+func IworkGet() error {
+	var wg sync.WaitGroup
+	sem := make(chan struct{}, maxConcurrency) // 控制最大并发数
+
+	// 扫描范围1: NF0000 - NF4000
+	for i := 0; i <= 4000; i++ {
+		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/NF%04d", i)
+		wg.Add(1)
+		go fetchURL(&wg, url, sem)
 	}
 
-	// 获取所有符合 `/域名/*` 规则的链接
-	fmt.Println("发现的链接:")
-	doc.Find("a").Each(func(index int, element *goquery.Selection) {
-		link, exists := element.Attr("href")
-		if exists {
-			parsedURL, err := url.Parse(link)
-			if err == nil {
-				// 确保链接属于同一域名，并且符合 `/域名/*` 格式
-				if parsedURL.IsAbs() {
-					// 绝对路径直接匹配
-					if parsedURL.Host == "it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/" && parsedURL.Path != "/NF3266" {
-						fmt.Println(parsedURL.String())
-					}
-				} else {
-					// 处理相对路径
-					fullURL := targetURL + parsedURL.Path
-					fmt.Println(fullURL)
-				}
-			}
-		}
-	})
+	// 扫描范围2: N00000 - N99999
+	for i := 0; i <= 99999; i++ {
+		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/N%05d", i)
+		wg.Add(1)
+		go fetchURL(&wg, url, sem)
+	}
+
+	wg.Wait() // 等待所有 goroutine 完成
+	fmt.Println("[*] 扫描完成")
 	return nil
 }
 
