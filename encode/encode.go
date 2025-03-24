@@ -1,9 +1,8 @@
-package main
+package encode
 
 import (
 	"crypto/sha256"
 	"encoding/base64"
-	"fmt"
 	"log"
 )
 
@@ -29,9 +28,9 @@ func generateFixedString(salt string, length int) (string, error) {
 	return encoded, nil
 }
 
-func main() {
-	// 给定盐
-	salt := "NF3266"
+func Set(salt string) string {
+	// // 给定盐
+	// salt := "NF3266"
 
 	// 生成固定的 28 位字符
 	result, err := generateFixedString(salt, 28)
@@ -39,5 +38,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(result) // 输出固定长度的字符（28 位）
+	return result
 }

