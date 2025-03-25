@@ -2,19 +2,107 @@ package algorithm
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"oftools/oflog"
 )
 
-mapping := map[string]string{
-	"pingpong":  "wLRJm5Rf",
-	"badminton": "LIgGfIxc",
+type Ifsuccess struct {
+	Code int `json:"code"`
 }
 
+// 定义结构体
+type Data struct {
+	PsnCode string `json:"psncode"`
+	PsnName string `json:"psnname"`
+	Bm      string `json:"bm"`
+	Syq     string `json:"syq"`
+	Yq      string `json:"yq"`
+}
 
+type Response struct {
+	Data Data `json:"data"`
+}
 
 func SignSingle(name string, id string) error {
+
+	mapping := map[string]string{
+		"pingpong":  "wLRJm5Rf",
+		"badminton": "LIgGfIxc",
+	}
+	// 检查键是否存在
+	if _, exists := mapping[name]; !exists {
+		oflog.Print.Errorf("key '%s' not exsit", name)
+		return nil
+	}
+	// Define the request URL
+	url := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/" + id
+
+	// Define the request body (empty JSON data)
+	jsonData := []byte(`{}`)
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		oflog.Print.Errorf("Error creating request:%s", err)
+		return err
+	}
+
+	// Set headers
+	req.Header.Set("Host", "it.ofilm.com")
+	req.Header.Set("Content-Type", "application/json")
+
+	// Skip HTTPS certificate verification (insecure)
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+
+	// Send the request
+	resp, err := client.Do(req)
+	if err != nil {
+		oflog.Print.Errorf("Error sending request:%s", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		oflog.Print.Errorf("Error reading response:%s", err)
+		return err
+	}
+
+	// // Print the response status and body
+	// fmt.Printf("Status Code: %d\n", resp.StatusCode)
+	// fmt.Printf("Response Body: %s\n", body)
+	var ifsuccess Ifsuccess
+	err = json.Unmarshal([]byte(body), &ifsuccess)
+	if err != nil {
+		oflog.Print.Errorf("JSON 解析错误:%s", err)
+		return err
+	}
+	if ifsuccess.Code == 500 {
+		oflog.Print.Errorf("User not exist")
+		return nil
+	}
+	var result Response
+
+	err = json.Unmarshal([]byte(body), &result)
+	if err != nil {
+		oflog.Print.Errorf("JSON 解析错误:%s", err)
+		return err
+	}
+
+	fmt.Println("psncode:", result.Data.PsnCode)
+	fmt.Println("psnname:", result.Data.PsnName)
+	fmt.Println("bm:", result.Data.Bm)
+	fmt.Println("syq:", result.Data.Syq)
+	fmt.Println("yq:", result.Data.Yq)
 	return nil
 }
 
