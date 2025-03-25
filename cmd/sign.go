@@ -23,11 +23,17 @@ var SignCommand = &cli.Command{
 				oflog.Init()
 				//sourceDir := ctx.Args().Get(0)
 				//firewareDir := "D:\\.oftools\\excel\\work"
-				err = algorithm.SignPingpong()
-				if err != nil {
-					oflog.Print.Fatalf("Function start failed at algorithm.SignPingpong!")
+				if ctx.Args().Len() == 0 {
+					err = algorithm.SignPingpong()
+					if err != nil {
+						oflog.Print.Fatalf("Function start failed at algorithm.SignPingpong!")
+						return err
+					}
+				} else {
+					oflog.Print.Fatalf("Do not support one more arg.")
 					return err
 				}
+
 				return nil
 			},
 		},
@@ -58,6 +64,29 @@ var SignCommand = &cli.Command{
 				err = algorithm.SignTest()
 				if err != nil {
 					oflog.Print.Fatalf("Function start failed at algorithm.SignTest!")
+					return err
+				}
+				return nil
+			},
+		},
+
+		{
+			Name:  "single",
+			Usage: "🍄 Signnig one by one at activity",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				oflog.Init()
+				//sourceDir := ctx.Args().Get(0)
+				//firewareDir := "D:\\.oftools\\excel\\work"
+				if ctx.Args().Len() != 2 {
+					oflog.Print.Fatalf("Please input an activity and a id.")
+					return err
+				}
+				name := ctx.Args().Get(0)
+				id := ctx.Args().Get(1)
+				err = algorithm.SignSingle(name, id)
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.SignSingle!")
 					return err
 				}
 				return nil

@@ -80,7 +80,7 @@ func IworkGet() error {
 	for i := 3260; i <= 3270; i++ {
 		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/NF%04d", i)
 		wg.Add(1)
-		filename := "NF0000-NF4000"
+		filename := "NF0000-NF4000.txt"
 		go fetchURL(&wg, url, sem, filename)
 	}
 
@@ -88,7 +88,7 @@ func IworkGet() error {
 	for i := 0; i <= 99999; i++ {
 		url := fmt.Sprintf("https://it.ofilm.com/hr/hr-ks/rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/N%05d", i)
 		wg.Add(1)
-		filename := "N00000-N99999"
+		filename := "N00000-N99999.txt"
 		go fetchURL(&wg, url, sem, filename)
 	}
 

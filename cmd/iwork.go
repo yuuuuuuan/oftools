@@ -41,7 +41,7 @@ var IworkCommand = &cli.Command{
 				oflog.Init()
 				if c.Args().Len() != 1 {
 					oflog.Print.Fatalf("Please input a user id.")
-					return nil
+					return err
 				}
 				user := c.Args().Get(0)
 				err = algorithm.IworkSent(user)

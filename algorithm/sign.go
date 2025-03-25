@@ -7,6 +7,17 @@ import (
 	"oftools/oflog"
 )
 
+mapping := map[string]string{
+	"pingpong":  "wLRJm5Rf",
+	"badminton": "LIgGfIxc",
+}
+
+
+
+func SignSingle(name string, id string) error {
+	return nil
+}
+
 func SignPingpong() error {
 	// requst URL
 	url := "https://it.ofilm.com/Bus/admin/Bus/AddByBusRecord"
