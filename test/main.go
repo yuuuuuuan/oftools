@@ -31,7 +31,7 @@ func generateFixedString(salt string, length int) (string, error) {
 
 func main() {
 	// 给定盐
-	salt := "NF3266"
+	salt := "NF3248"
 
 	// 生成固定的 28 位字符
 	result, err := generateFixedString(salt, 28)
