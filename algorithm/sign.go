@@ -7,8 +7,18 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"oftools/encode"
 	"oftools/oflog"
 )
+
+type Input struct {
+	Id      string `json:"u_id"`
+	Name    string `json:"u_name"`
+	Dept    string `json:"u_dept"`
+	Group   string `json:"u_group"`
+	Park    string `json:"u_park"`
+	Content string `json:"content"`
+}
 
 type Ifsuccess struct {
 	Code int `json:"code"`
@@ -32,12 +42,16 @@ func SignSingle(name string, id string) error {
 	mapping := map[string]string{
 		"pingpong":  "wLRJm5Rf",
 		"badminton": "LIgGfIxc",
+		"billiard":  "v0wudzzk",
 	}
+
 	// 检查键是否存在
-	if _, exists := mapping[name]; !exists {
+	value, exists := mapping[name]
+	if !exists {
 		oflog.Print.Errorf("key '%s' not exsit", name)
 		return nil
 	}
+
 	// Define the request URL
 	url := "https://it.ofilm.com/hr/hr-ks//rest/kskinsfolk/kskinsfolk/findUserNoNcHrEK/" + id
 
@@ -103,6 +117,65 @@ func SignSingle(name string, id string) error {
 	fmt.Println("bm:", result.Data.Bm)
 	fmt.Println("syq:", result.Data.Syq)
 	fmt.Println("yq:", result.Data.Yq)
+
+	input := Input{
+		Id:      result.Data.PsnCode,
+		Name:    result.Data.PsnName,
+		Dept:    result.Data.Bm,
+		Group:   result.Data.Syq,
+		Park:    result.Data.Yq,
+		Content: value, // 可以添加额外的信息
+	}
+
+	if err = postsign(input); err != nil {
+		oflog.Print.Errorf("%s Error:failed at algorithm.postsign!", getFunctionName())
+		return err
+	}
+
+	return nil
+}
+
+func postsign(input Input) error {
+
+	url := "https://it.ofilm.com/Bus/admin/Bus/AddByBusRecord"
+	openid := encode.Set(input.Id)
+
+	jsonData, err := json.Marshal(input)
+	if err != nil {
+		oflog.Print.Errorf("JSON Encode failed.")
+		return err
+	}
+	// new req
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		oflog.Print.Errorf("New Request failed.")
+		return err
+	}
+
+	// set header
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Xweb_xhr", "1")
+	req.Header.Set("Openid", openid)
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090c11)XWEB/11275")
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("Sec-Fetch-Site", "cross-site")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+	req.Header.Set("Referer", "https://servicewechat.com/wx7222634c083face7/179/page-frame.html")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
+	req.Header.Set("Connection", "keep-alive")
+
+	// new http client req
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		oflog.Print.Errorf("Send Requst failed.")
+		return err
+	}
+	defer resp.Body.Close()
+
+	oflog.Print.Infof("%s statusCode for openid %s: %d\n", jsonData, openid, resp.StatusCode)
 	return nil
 }
 
