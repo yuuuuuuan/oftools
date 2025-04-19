@@ -271,8 +271,8 @@ func SignPingpong() error {
 		},
 
 		{
-			"u_id":    "NF3101",
-			"u_name":  "万永存",
+			"u_id":    "NF3067",
+			"u_name":  "辛洪亮",
 			"u_dept":  "影像软件开发课",
 			"u_group": "影像事业部",
 			"u_park":  "南昌未来城",
