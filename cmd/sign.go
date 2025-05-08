@@ -79,7 +79,7 @@ var SignCommand = &cli.Command{
 				//sourceDir := ctx.Args().Get(0)
 				//firewareDir := "D:\\.oftools\\excel\\work"
 				if ctx.Args().Len() != 2 {
-					oflog.Print.Fatalf("Please input an activity and a id.")
+					oflog.Print.Fatalf("Please input an activity and a id.（pingpong，badminton，billiard）")
 					return err
 				}
 				name := ctx.Args().Get(0)
