@@ -171,7 +171,7 @@ func requst(token, username, testpaperid string) {
 
 	// 设置请求频率间隔时间
 	requestInterval := 10 * time.Millisecond // 设置请求之间的间隔时间，1秒
-	requstTime := 30
+	requstTime := 100
 	// 发送请求并保存响应数据
 	for i := 0; i < requstTime; i++ {
 		// 将请求数据编码为JSON
