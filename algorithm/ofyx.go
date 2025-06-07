@@ -170,10 +170,10 @@ func requst(token, username, testpaperid string) {
 	defer file.Close()
 
 	// 设置请求频率间隔时间
-	requestInterval := 100 * time.Millisecond // 设置请求之间的间隔时间，1秒
-
+	requestInterval := 10 * time.Millisecond // 设置请求之间的间隔时间，1秒
+	requstTime := 30
 	// 发送请求并保存响应数据
-	for i := 0; i < 10; i++ {
+	for i := 0; i < requstTime; i++ {
 		// 将请求数据编码为JSON
 		jsonData, err := json.Marshal(data)
 		if err != nil {
@@ -264,5 +264,72 @@ func requst(token, username, testpaperid string) {
 	}
 
 	fmt.Println("请求已完成，listelqu数据已保存到response.json")
-	
+
+	// 第一步：读取 response1.txt 文件内容
+	responseFile, err := os.Open("response1.json")
+	if err != nil {
+		fmt.Println("无法打开 response1.json:", err)
+		return
+	}
+	defer responseFile.Close()
+
+	var responseContent string
+	scanner := bufio.NewScanner(responseFile)
+	for scanner.Scan() {
+		responseContent += scanner.Text() + "\n"
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println("读取 response1.txt 错误:", err)
+		return
+	}
+
+	// 第二步：读取目标文件
+	targetFile, err := os.Open("template.html")
+	if err != nil {
+		fmt.Println("无法打开目标文件:", err)
+		return
+	}
+	defer targetFile.Close()
+
+	// 将目标文件的内容存入一个切片中
+	var lines []string
+	scanner = bufio.NewScanner(targetFile)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println("读取目标文件错误:", err)
+		return
+	}
+
+	// 第三步：在指定行列插入内容
+	lineToInsert := 44   // 假设我们在第3行插入
+	columnToInsert := 32 // 假设我们在第5列插入
+
+	// 获取指定行的内容并插入到该列位置
+	if lineToInsert-1 < len(lines) {
+		line := lines[lineToInsert-1]
+		// 将内容插入指定列位置
+		line = line[:columnToInsert-1] + responseContent + line[columnToInsert-1:]
+		lines[lineToInsert-1] = line
+	}
+
+	// 第四步：将修改后的内容写回到文件
+	outputfilename := "index_" + testpaperid + ".html"
+	outputFile, err := os.Create(outputfilename)
+	if err != nil {
+		fmt.Println("无法创建输出文件:", err)
+		return
+	}
+	defer outputFile.Close()
+
+	writer := bufio.NewWriter(outputFile)
+	for _, line := range lines {
+		writer.WriteString(line + "\n")
+	}
+	writer.Flush()
+
+	fmt.Println("内容已成功插入到" + outputfilename + "文件中！")
 }
