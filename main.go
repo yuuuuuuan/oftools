@@ -25,6 +25,7 @@ func main() {
 			cmd.ProgramCommand,
 			cmd.IworkCommand,
 			cmd.SignCommand,
+			cmd.OfyxCommand,
 		},
 	}
 

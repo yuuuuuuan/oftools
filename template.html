@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>试题库</title>
+    <style>
+        .question {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .answers {
+            margin-left: 20px;
+        }
+        .answer {
+            margin: 5px 0;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: #666;
+        }
+                /* 将footer的内容居中 */
+                footer {
+            text-align: center;
+            margin-top: 50px; /* 可选，调整footer与页面内容的距离 */
+        }
+
+        footer p {
+            margin: 5px 0; /* 可选，设置每个段落的上下间距 */
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <!-- Questions will be inserted here by JavaScript -->
+    </div>
+
+    <script>
+        
+        const questions_raw = [];
+        
+// 使用 reduce 去除重复的 id
+const questions = questions_raw.reduce((accumulator, current) => {
+  // 检查当前 id 是否已经存在于 accumulator 中
+  if (!accumulator.some(item => item.id === current.id)) {
+    accumulator.push(current);
+  }
+  return accumulator;
+}, []);
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                
+                // Question text
+                questionDiv.innerHTML = `<p><strong>${index + 1}. ${q.content}</strong></p>`;
+                
+                // Answers
+                const answersDiv = document.createElement('div');
+                answersDiv.className = 'answers';
+                
+                q.answers.forEach(answer => {
+                    const answerDiv = document.createElement('div');
+                    answerDiv.className = `answer ${answer.isRight ? 'correct' : 'incorrect'}`;
+                    answerDiv.textContent = answer.content;
+                    answersDiv.appendChild(answerDiv);
+                });
+                
+                questionDiv.appendChild(answersDiv);
+                container.appendChild(questionDiv);
+            });
+        }
+
+        // Initialize quiz
+        renderQuiz();
+    </script>
+        <footer>
+            <p>版权所有 &copy; 2025 NF3266</p>
+            <p>POWERED BY YUAN</p>
+        </footer>
+</body>
+</html>
