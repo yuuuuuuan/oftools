@@ -9,10 +9,10 @@ import (
 
 // GreetCommand is a simple command to greet the user.
 var ConvertCommand = &cli.Command{
-	Name:    "convert",
-	Aliases: []string{"c"},
-	Usage:   "🐱 Convert hex to dec",
-	HideHelpCommand:      true,
+	Name:            "convert",
+	Aliases:         []string{"c"},
+	Usage:           "🐱 Convert hex to dec",
+	HideHelpCommand: true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{
@@ -92,6 +92,24 @@ var ConvertCommand = &cli.Command{
 				oflog.Print.Infof("Hex: %s -> Dec: %d", value, result.Dec)
 				oflog.Print.Infof("Hex: %s -> Oct: %s", value, result.Oct)
 				oflog.Print.Infof("Hex: %s -> Bin: %s", value, result.Bin)
+				return nil
+			},
+		},
+
+		// Binary to other systems
+		{
+			Name:  "text2bin",
+			Usage: "Convert a 0/1 text file to bin file.",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				inputFile := ctx.Args().Get(0)
+				outputFile := ctx.Args().Get(1)
+
+				err = algorithm.BinaryToHexFile(inputFile, outputFile)
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.BinaryToHexFile!")
+					return err
+				}
 				return nil
 			},
 		},

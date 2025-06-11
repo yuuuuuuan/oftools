@@ -1,7 +1,9 @@
 package algorithm
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -97,4 +99,67 @@ func ConvertOctToOthers(octalValue string) (Conversion, error) {
 		Bin: binaryValue,
 		Oct: octalValue,
 	}, nil
+}
+
+// BinaryToHexFile reads a text file containing binary strings line by line,
+// converts every 8 bits into a byte, and writes the resulting binary data to the output file.
+func BinaryToHexFile(inputPath, outputPath string) error {
+	inputFile, err := os.Open(inputPath)
+	if err != nil {
+		return fmt.Errorf("无法打开输入文件: %v", err)
+	}
+	defer inputFile.Close()
+
+	outputFile, err := os.Create(outputPath)
+	if err != nil {
+		return fmt.Errorf("无法创建输出文件: %v", err)
+	}
+	defer outputFile.Close()
+
+	scanner := bufio.NewScanner(inputFile)
+	lineNumber := 0
+
+	for scanner.Scan() {
+		lineNumber++
+		line := scanner.Text()
+
+		// 移除所有空白字符
+		cleaned := strings.Map(func(r rune) rune {
+			if r == '0' || r == '1' {
+				return r
+			}
+			return -1
+		}, line)
+
+		for i := 0; i < len(cleaned); i += 8 {
+			//end := i + 8
+			byteStr := cleaned[i:]
+			if len(byteStr) > 8 {
+				byteStr = byteStr[:8]
+			} else if len(byteStr) < 8 {
+				// 补齐末尾不足8位的字节
+				byteStr += strings.Repeat("0", 8-len(byteStr))
+			}
+
+			// 二进制字符串转为字节
+			var b byte
+			_, err := fmt.Sscanf(byteStr, "%08b", &b)
+			if err != nil {
+				return fmt.Errorf("第 %d 行处理失败，二进制无效: %v", lineNumber, err)
+			}
+
+			_, err = outputFile.Write([]byte{b})
+			if err != nil {
+				return fmt.Errorf("写入文件失败: %v", err)
+			}
+		}
+
+		fmt.Printf("✅ 已写入第 %d 行\n", lineNumber)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("读取文件失败: %v", err)
+	}
+
+	return nil
 }
