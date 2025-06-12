@@ -26,6 +26,7 @@ func main() {
 			cmd.IworkCommand,
 			cmd.SignCommand,
 			cmd.OfyxCommand,
+			cmd.GameCommand,
 		},
 	}
 
