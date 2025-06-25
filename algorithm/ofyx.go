@@ -170,7 +170,7 @@ func requst(token, username, testpaperid string) {
 	defer file.Close()
 
 	// 设置请求频率间隔时间
-	requestInterval := 10 * time.Millisecond // 设置请求之间的间隔时间，1秒
+	requestInterval := 200 * time.Millisecond // 设置请求之间的间隔时间，1秒
 	requstTime := 100
 	// 发送请求并保存响应数据
 	for i := 0; i < requstTime; i++ {
