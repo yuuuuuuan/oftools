@@ -3,7 +3,7 @@ package cmd
 import (
 	"oftools/algorithm"
 	"oftools/oflog"
-
+	"fmt"
 	"github.com/urfave/cli/v2"
 )
 
@@ -23,9 +23,10 @@ var OaCommand = &cli.Command{
 				oflog.Init()
 
 				if ctx.Args().Len() == 1 {
-					err = algorithm.OaResults()
+					user := ctx.Args().Get(0)
+					err = algorithm.OaResults(user)
 					if err != nil {
-						println(err)
+						fmt.Println(err)
 						oflog.Print.Fatalf("Function start failed at algorithm.OaResults!")
 						return err
 					}

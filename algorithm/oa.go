@@ -2,6 +2,7 @@ package algorithm
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -24,20 +25,31 @@ type OaRecord struct {
 	Xzfl        string `json:"xzfl"`
 }
 
-func OaResults() error {
+type JsonBody struct {
+	LoginID string `json:"loginid"`
+	ID      string `json:"id"`
+}
+
+func OaResults(name string) error {
 	url := "https://it.ofilm.com/ofilm-oa/oa/queryoajixiaojd"
-	jsonBody := `{"loginid":"NF3266","id":"智能汽车研发二部"}`
-	body := []byte(jsonBody)
+	jsonBody := JsonBody{
+		LoginID: name,
+		ID:      "智能汽车研发二部",
+	}
+	body, err := json.Marshal(jsonBody)
+	if err != nil {
+		return fmt.Errorf("error marshaling JSON: %w", err)
+	}
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {
 		return fmt.Errorf("error creating request: %w", err)
 	}
 
-	// 添加 Headers
+	// ✅ 保留 gzip 但不设置 br/zstd，Go 支持自动解压 gzip；或者你想保留 br，必须手动解压
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 	req.Header.Set("Accept", "*/*")
-	req.Header.Set("Accept-Encoding", "gzip, deflate, br, zstd")
+	req.Header.Set("Accept-Encoding", "gzip") // ✅ 建议只保留 gzip
 	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9,en-HK;q=0.8,en;q=0.7,zh-HK;q=0.6")
 	req.Header.Set("Cache-Control", "no-cache")
 	req.Header.Set("Origin", "https://oa.ofilm.com")
@@ -58,7 +70,18 @@ func OaResults() error {
 	}
 	defer resp.Body.Close()
 
-	respBody, err := io.ReadAll(resp.Body)
+	// ✅ 检查是否 gzip 响应
+	var reader io.Reader = resp.Body
+	if resp.Header.Get("Content-Encoding") == "gzip" {
+		gzReader, err := gzip.NewReader(resp.Body)
+		if err != nil {
+			return fmt.Errorf("gzip 解压失败: %w", err)
+		}
+		defer gzReader.Close()
+		reader = gzReader
+	}
+
+	respBody, err := io.ReadAll(reader)
 	if err != nil {
 		return fmt.Errorf("error reading response: %w", err)
 	}
