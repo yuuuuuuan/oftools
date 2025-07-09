@@ -27,6 +27,7 @@ func main() {
 			cmd.SignCommand,
 			cmd.OfyxCommand,
 			cmd.GameCommand,
+			cmd.OaCommand,
 		},
 	}
 
