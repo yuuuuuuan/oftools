@@ -38,5 +38,29 @@ var OaCommand = &cli.Command{
 				return nil
 			},
 		},
+
+		{
+			Name:  "info",
+			Usage: "🍿 Get quiz with token and Testpaper id.",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				oflog.Init()
+
+				if ctx.Args().Len() == 1 {
+					user := ctx.Args().Get(0)
+					err = algorithm.OaInfo(user)
+					if err != nil {
+						fmt.Println(err)
+						oflog.Print.Fatalf("Function start failed at algorithm.OaInfo!")
+						return err
+					}
+				} else {
+					oflog.Print.Fatalf("Do not support one more arg.")
+					return err
+				}
+
+				return nil
+			},
+		},
 	},
 }

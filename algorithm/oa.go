@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"oftools/oflog"
 )
 
 type OaResponse struct {
@@ -101,10 +102,14 @@ func OaResults(name string) error {
 	}
 
 	// 输出格式化结果
-	fmt.Printf("姓名：%s（工号：%s）\n\n", result.Data[0].Name, result.Data[0].ClerkCode)
+	oflog.Print.Infof("姓名：%s（工号：%s）\n", result.Data[0].Name, result.Data[0].ClerkCode)
 	for _, r := range result.Data {
-		fmt.Printf("✔ %s：%s\n", r.CYearPeriod, r.C7)
+		oflog.Print.Infof("✔ %s：%s", r.CYearPeriod, r.C7)
 	}
 
+	return nil
+}
+
+func OaInfo(name string) error {
 	return nil
 }
