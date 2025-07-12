@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"oftools/oflog"
+	"regexp"
 )
 
 type OaResponse struct {
@@ -111,5 +113,78 @@ func OaResults(name string) error {
 }
 
 func OaInfo(name string) error {
+	baseURL := "https://oa.ofilm.com/workflow/request/DataInputFrom.jsp"
+
+	// 构造查询参数
+	params := url.Values{}
+	params.Set("id", "558445")
+	params.Set("formid", "-916")
+	params.Set("bill", "1")
+	params.Set("node", "565381")
+	params.Set("detailsum", "0")
+	params.Set("trg", "field68618")
+	params.Set("trgv", name+",")
+	params.Set("rand", "1752162706921")
+	params.Set("tempflag", "0.785598242543941")
+
+	// 替换字段中的 NF3447 为 name
+	params.Set("635861|field68618", name)
+	params.Set("635863|field68663", "")
+	params.Set("635865|field451051", "RSQH101")
+	params.Set("636360|field68618", name)
+	params.Set("635862|field68658", "")
+	params.Set("635866|field68618", name)
+	params.Set("636358|field68618", name)
+	params.Set("635864|field68664", "")
+	params.Set("636359|field68618", name)
+
+	fullURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+
+	// 构造请求
+	req, err := http.NewRequest("GET", fullURL, nil)
+	if err != nil {
+		return fmt.Errorf("创建请求失败: %w", err)
+	}
+
+	// 设置请求头
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9,en-HK;q=0.8,en;q=0.7,zh-HK;q=0.6")
+	req.Header.Set("Cache-Control", "max-age=0")
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Sec-Fetch-Dest", "document")
+	req.Header.Set("Sec-Fetch-Mode", "navigate")
+	req.Header.Set("Sec-Fetch-Site", "none")
+	req.Header.Set("Sec-Fetch-User", "?1")
+	req.Header.Set("Upgrade-Insecure-Requests", "1")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36")
+	req.Header.Set("sec-ch-ua", `"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`)
+	req.Header.Set("sec-ch-ua-mobile", "?0")
+	req.Header.Set("sec-ch-ua-platform", `"Windows"`)
+
+	// 设置 Cookie
+	req.Header.Set("Cookie", `wfcookie=0; yili_userid=NF3266; yili_token=2707dcb6-af45-4d13-a5a1-6069f161c873; loginfileweaver=%2Fwui%2Ftheme%2Fecology8%2Fpage%2Flogin.jsp%3FtemplateId%3D101%26logintype%3D1%26gopage%3D; loginidweaver=253272; languageidweaver=7; JSESSIONID=abcZEBsaemyz_7daqt9Fz; ecology_JSessionid=abcZEBsaemyz_7daqt9Fz`)
+
+	// 发起请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("请求失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// 读取响应内容
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("读取响应失败: %w", err)
+	}
+
+	js := string(body)
+
+	re := regexp.MustCompile(`var\s+mainjs\s*=\s*"getElementByDocument\(window\.parent\.document,\s*\\?"(field\d{5})\\?"\)\.value\\?=\\"([^\\"]+)\\";`)
+	
+	matches := re.FindAllStringSubmatch(js, -1)
+	for _, m := range matches {
+		fmt.Printf("字段: %s, 值: %s\n", m[1], m[2])
+	}
 	return nil
 }
