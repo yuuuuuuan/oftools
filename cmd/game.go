@@ -36,5 +36,28 @@ var GameCommand = &cli.Command{
 				return nil
 			},
 		},
+
+		// Hex to other systems
+		{
+			Name:  "2048",
+			Usage: "🎲 Bulls and Cows Game.",
+			Action: func(ctx *cli.Context) error {
+				var err error
+				oflog.Init()
+
+				if ctx.Args().Len() == 0 {
+					err = algorithm.Game2048()
+					if err != nil {
+						oflog.Print.Fatalf("Function start failed at algorithm.Game2048!")
+						return err
+					}
+				} else {
+					oflog.Print.Fatalf("Do not support one more arg.")
+					return err
+				}
+
+				return nil
+			},
+		},
 	},
 }

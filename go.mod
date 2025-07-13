@@ -25,6 +25,7 @@ require (
 require (
 	github.com/charmbracelet/log v0.4.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
+	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
 	github.com/go-ole/go-ole v1.3.0
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect

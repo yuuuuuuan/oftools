@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/eiannone/keyboard"
 )
 
 func generateSecret(length int) string {
@@ -109,4 +111,201 @@ func GameWordle() error {
 		}
 	}
 	return nil
+}
+
+type Board [4][4]int
+
+func Game2048() error {
+	rand.Seed(time.Now().UnixNano())
+	board := Board{}
+	addRandom(&board)
+	addRandom(&board)
+
+	// 初始化键盘输入
+	if err := keyboard.Open(); err != nil {
+		return fmt.Errorf("无法打开键盘输入: %v", err)
+	}
+	defer keyboard.Close()
+
+	for {
+		clearScreen()
+		printBoard(board)
+
+		// 等待方向键输入
+		fmt.Println("请输入方向 (↑ ↓ ← →) 或 Q 退出:")
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			return fmt.Errorf("键盘输入失败: %v", err)
+		}
+
+		// 用户退出
+		if char == 'q' || char == 'Q' {
+			fmt.Println("感谢游戏，再见！")
+			return nil
+		}
+
+		var moved bool
+		switch key {
+		case keyboard.KeyArrowUp:
+			moved = moveUp(&board)
+		case keyboard.KeyArrowDown:
+			moved = moveDown(&board)
+		case keyboard.KeyArrowLeft:
+			moved = moveLeft(&board)
+		case keyboard.KeyArrowRight:
+			moved = moveRight(&board)
+		default:
+			// 如果不是方向键，忽略
+			continue
+		}
+
+		if moved {
+			addRandom(&board)
+		}
+
+		if checkGameOver(board) {
+			clearScreen()
+			printBoard(board)
+			fmt.Println("游戏结束！")
+			return nil
+		}
+		if checkWin(board) {
+			clearScreen()
+			printBoard(board)
+			fmt.Println("恭喜你赢了！")
+			return nil
+		}
+	}
+}
+
+func clearScreen() {
+	// 通过打印控制符清屏
+	fmt.Print("\033[H\033[2J")
+}
+
+func printBoard(board Board) {
+	fmt.Println("  2048 游戏")
+	fmt.Println("当前得分: ", getScore(board))
+
+	// 打印棋盘
+	for _, row := range board {
+		fmt.Print(" ")
+		for _, val := range row {
+			if val == 0 {
+				fmt.Print(" .  ")
+			} else {
+				fmt.Printf("%-4d", val)
+			}
+		}
+		fmt.Println()
+	}
+
+	// 提示信息
+	fmt.Println("\n[↑] 上 [↓] 下 [←] 左 [→] 右 [Q] 退出")
+}
+
+func getScore(board Board) int {
+	score := 0
+	for _, row := range board {
+		for _, val := range row {
+			score += val
+		}
+	}
+	return score
+}
+
+func addRandom(board *Board) {
+	var emptyCells []struct{ x, y int }
+	for y := 0; y < 4; y++ {
+		for x := 0; x < 4; x++ {
+			if board[y][x] == 0 {
+				emptyCells = append(emptyCells, struct{ x, y int }{x, y})
+			}
+		}
+	}
+
+	if len(emptyCells) == 0 {
+		return
+	}
+
+	cell := emptyCells[rand.Intn(len(emptyCells))]
+	board[cell.y][cell.x] = 2 * (rand.Intn(2) + 1)
+}
+
+func moveUp(board *Board) bool {
+	return slide(board, func(i, j int) (int, int) { return i - 1, j })
+}
+
+func moveDown(board *Board) bool {
+	return slide(board, func(i, j int) (int, int) { return i + 1, j })
+}
+
+func moveLeft(board *Board) bool {
+	return slide(board, func(i, j int) (int, int) { return i, j - 1 })
+}
+
+func moveRight(board *Board) bool {
+	return slide(board, func(i, j int) (int, int) { return i, j + 1 })
+}
+
+func slide(board *Board, getNextPos func(i, j int) (int, int)) bool {
+	moved := false
+	for i := 0; i < 4; i++ {
+		for j := 0; j < 4; j++ {
+			if board[i][j] == 0 {
+				continue
+			}
+
+			x, y := j, i
+			for {
+				nextX, nextY := getNextPos(x, y)
+				if nextX < 0 || nextX >= 4 || nextY < 0 || nextY >= 4 {
+					break
+				}
+
+				if board[nextY][nextX] == 0 {
+					board[nextY][nextX] = board[y][x]
+					board[y][x] = 0
+					x, y = nextX, nextY
+					moved = true
+				} else if board[nextY][nextX] == board[y][x] {
+					board[nextY][nextX] *= 2
+					board[y][x] = 0
+					moved = true
+					break
+				} else {
+					break
+				}
+			}
+		}
+	}
+	return moved
+}
+
+func checkGameOver(board Board) bool {
+	for y := 0; y < 4; y++ {
+		for x := 0; x < 4; x++ {
+			if board[y][x] == 0 {
+				return false
+			}
+			if x+1 < 4 && board[y][x] == board[y][x+1] {
+				return false
+			}
+			if y+1 < 4 && board[y][x] == board[y+1][x] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func checkWin(board Board) bool {
+	for y := 0; y < 4; y++ {
+		for x := 0; x < 4; x++ {
+			if board[y][x] == 2048 {
+				return true
+			}
+		}
+	}
+	return false
 }
