@@ -3,6 +3,7 @@ package algorithm
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -141,5 +142,63 @@ func IworkSent(user string) error {
 	// Print the response status and body
 	fmt.Printf("Status Code: %d\n", resp.StatusCode)
 	fmt.Printf("Response Body: %s\n", body)
+	return nil
+}
+
+func IworkRencai(name string) error {
+	url := "https://bmxy.ofilm.com/rest/zf/zf/get"
+
+	// 构建 POST 请求体 JSON
+	payload := map[string]interface{}{
+		"url":    "http://192.168.55.32:8892/rest/api/hrtl/selectSelfReturn",
+		"empId":  "NF3266",
+		"openId": "olZaE61bCD9kOYCIJTKKfMeQxgsM",
+		"data": map[string]interface{}{
+			"userNo": name,
+			"id":     "20082",
+		},
+	}
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("JSON 序列化失败: %w", err)
+	}
+
+	// 创建 POST 请求
+	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
+	if err != nil {
+		return fmt.Errorf("创建请求失败: %w", err)
+	}
+
+	// 设置请求头（模拟微信小程序环境）
+	req.Header.Set("Host", "bmxy.ofilm.com")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("Xweb_xhr", "1")
+	req.Header.Set("Openid", "olZaE61bCD9kOYCIJTKKfMeQxgsM")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) UnifiedPCWindowsWechat(0xf2540611) XWEB/14199")
+	req.Header.Set("Referer", "https://servicewechat.com/wx7222634c083face7/211/page-frame.html")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
+	req.Header.Set("Priority", "u=1, i")
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Sec-Fetch-Site", "cross-site")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+
+	// 发起请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("发送请求失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// 读取响应
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("读取响应失败: %w", err)
+	}
+
+	fmt.Printf("响应状态码: %d\n响应体: %s\n", resp.StatusCode, body)
 	return nil
 }

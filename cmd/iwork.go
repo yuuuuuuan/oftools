@@ -52,5 +52,27 @@ var IworkCommand = &cli.Command{
 				return nil
 			},
 		},
+
+		// Hex to other systems
+		{
+			Name:  "rencai",
+			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Action: func(c *cli.Context) error {
+				var err error
+				//var value string
+				oflog.Init()
+				if c.Args().Len() != 1 {
+					oflog.Print.Fatalf("Please input a user id.")
+					return err
+				}
+				user := c.Args().Get(0)
+				err = algorithm.IworkRencai(user)
+				if err != nil {
+					oflog.Print.Fatalf("Function start failed at algorithm.IworkRencai!")
+					return err
+				}
+				return nil
+			},
+		},
 	},
 }
