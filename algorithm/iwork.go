@@ -149,20 +149,20 @@ func IworkSent(user string) error {
 }
 
 type CheckReview struct {
-	UserNo       string  `json:"userNo"`
-	UserName     string  `json:"userName"`
-	UserMaxEdu   string  `json:"userMaxEdu"`
-	UserSchool   string  `json:"userSchool"`
-	UserDept     string  `json:"userDept"`
-	PerGrade     string  `json:"perGrade"`
-	SrlScore     string  `json:"srlScore"`
-	PerScore     float64 `json:"perScore"`
-	FzqlScore    string  `json:"fzqlScore"`
-	JcScore      float64 `json:"jcScore"`
-	FzyyScore    string  `json:"fzyyScore"`
-	FinalScore   float64 `json:"finalScore"`
-	FinalGrade   string  `json:"finalGrade"`
-	FinalRanking int     `json:"finalRanking"`
+	UserNo       string      `json:"userNo"`
+	UserName     string      `json:"userName"`
+	UserMaxEdu   string      `json:"userMaxEdu"`
+	UserSchool   string      `json:"userSchool"`
+	UserDept     string      `json:"userDept"`
+	PerGrade     string      `json:"perGrade"`
+	SrlScore     json.Number `json:"srlScore"`
+	PerScore     float64     `json:"perScore"`
+	FzqlScore    json.Number `json:"fzqlScore"`
+	JcScore      float64     `json:"jcScore"`
+	FzyyScore    json.Number `json:"fzyyScore"`
+	FinalScore   float64     `json:"finalScore"`
+	FinalGrade   string      `json:"finalGrade"`
+	FinalRanking int         `json:"finalRanking"`
 }
 
 type ResultData struct {
@@ -233,6 +233,8 @@ func IworkRencai(name string) error {
 	if err != nil {
 		return fmt.Errorf("读取响应失败: %w", err)
 	}
+
+	//fmt.Println(string(body))
 
 	var apiResp APIResponse
 	err = json.Unmarshal(body, &apiResp)
@@ -316,20 +318,20 @@ func writeUserToCSV(cr CheckReview, csvPath string) error {
 	defer writer.Flush()
 
 	record := []string{
-	cr.UserNo,
-	cr.UserName,
-	cr.UserMaxEdu,
-	cr.UserSchool,
-	cr.UserDept,
-	cr.PerGrade,
-	cr.SrlScore, // string 类型，直接用
-	strconv.FormatFloat(cr.PerScore, 'f', -1, 64), // float64 类型，需转
-	cr.FzqlScore, // string 类型，直接用
-	strconv.FormatFloat(cr.JcScore, 'f', -1, 64),
-	cr.FzyyScore, // string 类型，直接用
-	strconv.FormatFloat(cr.FinalScore, 'f', -1, 64),
-	cr.FinalGrade,
-}
+		cr.UserNo,
+		cr.UserName,
+		cr.UserMaxEdu,
+		cr.UserSchool,
+		cr.UserDept,
+		cr.PerGrade,
+		cr.SrlScore.String(), // string 类型，直接用
+		strconv.FormatFloat(cr.PerScore, 'f', -1, 64), // float64 类型，需转
+		cr.FzqlScore.String(),                         // string 类型，直接用
+		strconv.FormatFloat(cr.JcScore, 'f', -1, 64),
+		cr.FzyyScore.String(), // string 类型，直接用
+		strconv.FormatFloat(cr.FinalScore, 'f', -1, 64),
+		cr.FinalGrade,
+	}
 
 	return writer.Write(record)
 }
