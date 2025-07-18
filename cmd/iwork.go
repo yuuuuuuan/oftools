@@ -17,7 +17,7 @@ var IworkCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "get",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "🎾 Get a range of user name and id which are validate",
 			Action: func(c *cli.Context) error {
 				var err error
 				//var value string
@@ -34,7 +34,7 @@ var IworkCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "sent",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "⚾ Sent a user name to get her/his private info",
 			Action: func(c *cli.Context) error {
 				var err error
 				//var value string
@@ -56,7 +56,7 @@ var IworkCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "rencai",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "🥎 Get the info of a user result from rencaipingding",
 			Action: func(c *cli.Context) error {
 				var err error
 				//var value string

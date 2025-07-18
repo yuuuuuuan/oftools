@@ -11,13 +11,13 @@ import (
 var OfyxCommand = &cli.Command{
 	Name:            "ofyx",
 	Aliases:         []string{"of"},
-	Usage:           "🦋 Ofilm yun xue bash shell",
+	Usage:           "🖼️  Ofilm yun xue bash shell",
 	HideHelpCommand: true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{
 			Name:  "getquiz",
-			Usage: "🍿 Get quiz with token and Testpaper id.",
+			Usage: "🏈 Get quiz with token and Testpaper id.",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()

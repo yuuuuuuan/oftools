@@ -17,7 +17,7 @@ var OaCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "results",
-			Usage: "🍿 Get quiz with token and Testpaper id.",
+			Usage: "🍿 Get a user results from a year ago to now.",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()
@@ -41,7 +41,7 @@ var OaCommand = &cli.Command{
 
 		{
 			Name:  "info",
-			Usage: "🍿 Get quiz with token and Testpaper id.",
+			Usage: "🏀 Get a user info from oa.",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()

@@ -40,7 +40,7 @@ var GameCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "2048",
-			Usage: "🎲 Bulls and Cows Game.",
+			Usage: "🍣 2048 Game.",
 			Action: func(ctx *cli.Context) error {
 				var err error
 				oflog.Init()
