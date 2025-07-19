@@ -135,6 +135,12 @@ func SignSingle(name string, id string) error {
 	return nil
 }
 
+func SignAuto(name string, num int) error {
+	
+	return nil
+	
+}
+
 func postsign(input Input) error {
 
 	url := "https://it.ofilm.com/Bus/admin/Bus/AddByBusRecord"
