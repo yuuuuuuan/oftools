@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"oftools/encode"
 	"oftools/oflog"
+	"time"
 )
 
 type Input struct {
@@ -136,9 +138,52 @@ func SignSingle(name string, id string) error {
 }
 
 func SignAuto(name string, num int) error {
-	
+	ids := []string{}
+	switch name {
+	case "pingpong":
+		ids = []string{
+			"NF3266", "NF3272", "NF3247", "NF3258",
+			"N0940570", "N0940540", "N0940539", "N0940572",
+			"NF3101", "NF3116",
+		}
+	case "badminton":
+		ids = []string{
+			"NF3272", "NF3247", "NF3258",
+		}
+	case "billiard":
+		ids = []string{
+			"NF3266", "NF3272", "NF3247", "NF3258",
+			"N0940570", "N0940540", "N0940539", "N0940572",
+			"NF3101", "NF3116",
+		}
+	default:
+		oflog.Print.Errorf("Invalid activity name: %s", name)
+	}
+
+	// 检查长度是否足够
+	if len(ids) < num {
+		panic("数组长度不足num个元素")
+	}
+
+	// 初始化随机数种子
+	rand.Seed(time.Now().UnixNano())
+
+	// 洗牌（Fisher–Yates Shuffle）
+	rand.Shuffle(len(ids), func(i, j int) {
+		ids[i], ids[j] = ids[j], ids[i]
+	})
+
+	// 取前11个
+	selected := ids[:num]
+
+	for _, id := range selected {
+		if err := SignSingle(name, id); err != nil {
+			oflog.Print.Errorf("Error signing for %s with id %s: %s", name, id, err)
+			return err
+		}
+	}
 	return nil
-	
+
 }
 
 func postsign(input Input) error {
