@@ -28,6 +28,7 @@ func main() {
 			cmd.OfyxCommand,
 			cmd.GameCommand,
 			cmd.OaCommand,
+			cmd.OtpDataCommand,
 		},
 	}
 
