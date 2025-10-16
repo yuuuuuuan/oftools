@@ -11,7 +11,7 @@ import (
 var IworkCommand = &cli.Command{
 	Name:            "iwork",
 	Aliases:         []string{"i"},
-	Usage:           "🍀 Greets the user with the provided name",
+	Usage:           "🍀 Auto tools at wechat iwork",
 	HideHelpCommand: true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems

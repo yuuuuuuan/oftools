@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io/fs"
+	"oftools/oflog"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -16,7 +17,8 @@ import (
 func OtpdataGetSingle(sourceDir string, nums []string) error {
 	file, err := os.Open(sourceDir)
 	if err != nil {
-		return fmt.Errorf("无法打开文件: %v", err)
+		oflog.Print.Errorf("Can not open sourceDir:%s", err)
+		return err
 	}
 	defer file.Close()
 
@@ -27,7 +29,8 @@ func OtpdataGetSingle(sourceDir string, nums []string) error {
 		lines = append(lines, scanner.Text())
 	}
 	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("读取文件出错: %v", err)
+		oflog.Print.Errorf("Read file failed:%s", err)
+		return err
 	}
 
 	// 检查 CSV 文件是否存在
@@ -40,7 +43,8 @@ func OtpdataGetSingle(sourceDir string, nums []string) error {
 	// 打开 CSV 文件（存在则追加，不存在则创建）
 	csvFile, err := os.OpenFile(csvPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return fmt.Errorf("打开/创建 CSV 文件失败: %v", err)
+		oflog.Print.Errorf("Open output.csv failed:%s", err)
+		return err
 	}
 	defer csvFile.Close()
 
@@ -61,7 +65,8 @@ func OtpdataGetSingle(sourceDir string, nums []string) error {
 	for _, numStr := range nums {
 		num, err := strconv.Atoi(numStr)
 		if err != nil {
-			return fmt.Errorf("行号 %s 不是有效数字", numStr)
+			oflog.Print.Errorf("The num is not valid:%s", err)
+			return err
 		}
 		if num < 1 || num > len(lines) {
 			return fmt.Errorf("行号 %d 超出文件范围", num)
@@ -110,7 +115,7 @@ func OtpdataGetMuti(sourceDir string) error {
 
 		// 只处理 .ini 文件
 		if !d.IsDir() && filepath.Ext(path) == ".ini" {
-			fmt.Printf("🔍 发现 INI 文件: %s\n", path)
+			oflog.Print.Infof("Succesed to find .ini file: %s", path)
 
 			// 示例：指定要提取的行号
 			nums := []string{"9", "9819", "9820", "9821", "9822", "9823", "9824", "9838", "9840", "9891", "9892", "9893", "9894", "9895", "9896", "9913", "9914", "9915", "9916", "9917", "9918"}
@@ -118,18 +123,22 @@ func OtpdataGetMuti(sourceDir string) error {
 			// 调用前面定义的单文件处理函数
 			err := OtpdataGetSingle(path, nums)
 			if err != nil {
-				fmt.Printf("⚠️ 处理文件 %s 时出错: %v\n", path, err)
+				oflog.Print.Errorf("Failed to deal with file %s:%s", path, err)
+				//fmt.Printf("⚠️ 处理文件 %s 时出错: %v\n", path, err)
 			} else {
-				fmt.Printf("✅ 已处理文件: %s\n", filepath.Base(path))
+				oflog.Print.Infof("Successed to deal with file %s", filepath.Base(path))
+				//fmt.Printf("✅ 已处理文件: %s\n", filepath.Base(path))
 			}
 		}
 		return nil
 	})
 
 	if err != nil {
-		return fmt.Errorf("遍历目录失败: %v", err)
+		oflog.Print.Infof("Fail to traversal dir:%s", err)
+		return err
 	}
 
-	fmt.Println("✨ 所有 INI 文件已处理完成。")
+	oflog.Print.Infof("Successed to deal with all .ini files!")
+	//fmt.Println("✨ 所有 INI 文件已处理完成。")
 	return nil
 }

@@ -11,13 +11,13 @@ import (
 var JumpCommand = &cli.Command{
 	Name:    "jump",
 	Aliases: []string{"j"},
-	Usage:   "💖 Greets the user with the provided name",
+	Usage:   "💖 Auto logging in jumpserver",
 	HideHelpCommand:      true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
 		{
 			Name:  "update",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Update your token",
 			Action: func(c *cli.Context) error {
 				var err error
 				//var value string
@@ -34,7 +34,7 @@ var JumpCommand = &cli.Command{
 		// Hex to other systems
 		{
 			Name:  "server",
-			Usage: "Convert a hex value to hexadecimal, binary, and octal",
+			Usage: "Open your jump server",
 			Action: func(c *cli.Context) error {
 				var err error
 				//var value string

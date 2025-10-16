@@ -11,7 +11,7 @@ import (
 var SignCommand = &cli.Command{
 	Name:            "sign",
 	Aliases:         []string{"si"},
-	Usage:           "🍭 Deal with Program",
+	Usage:           "🍭 Auto Signing at kinds of activities",
 	HideHelpCommand: true,
 	Subcommands: []*cli.Command{
 		// Hex to other systems
