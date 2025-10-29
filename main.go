@@ -18,7 +18,6 @@ func main() {
 		Commands: []*cli.Command{
 			cmd.GreetCommand,   // Register greet command
 			cmd.CalcCommand,    // Register calc command
-			cmd.VersionCommand, // Register version command
 			cmd.ConvertCommand,
 			cmd.ExcelCommand,
 			cmd.JumpCommand,
@@ -29,6 +28,7 @@ func main() {
 			cmd.GameCommand,
 			cmd.OaCommand,
 			cmd.OtpDataCommand,
+			cmd.VersionCommand, // Register version command
 		},
 	}
 
