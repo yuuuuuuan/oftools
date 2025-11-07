@@ -233,19 +233,19 @@ func addRandom(board *Board) {
 }
 
 func moveUp(board *Board) bool {
-	return slide(board, func(i, j int) (int, int) { return i - 1, j })
-}
-
-func moveDown(board *Board) bool {
-	return slide(board, func(i, j int) (int, int) { return i + 1, j })
-}
-
-func moveLeft(board *Board) bool {
 	return slide(board, func(i, j int) (int, int) { return i, j - 1 })
 }
 
-func moveRight(board *Board) bool {
+func moveDown(board *Board) bool {
 	return slide(board, func(i, j int) (int, int) { return i, j + 1 })
+}
+
+func moveLeft(board *Board) bool {
+	return slide(board, func(i, j int) (int, int) { return i - 1, j })
+}
+
+func moveRight(board *Board) bool {
+	return slide(board, func(i, j int) (int, int) { return i + 1, j })
 }
 
 func slide(board *Board, getNextPos func(i, j int) (int, int)) bool {

@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"oftools/oflog"
 	"os"
 	"strings"
 	"time"
@@ -165,7 +165,7 @@ func requst(token, username, testpaperid string) {
 	// 打开文件以保存响应数据
 	file, err := os.Create("response1.json")
 	if err != nil {
-		log.Fatalf("无法创建文件: %v", err)
+		oflog.Print.Errorf("无法创建文件: %v", err)
 	}
 	defer file.Close()
 
@@ -177,13 +177,13 @@ func requst(token, username, testpaperid string) {
 		// 将请求数据编码为JSON
 		jsonData, err := json.Marshal(data)
 		if err != nil {
-			log.Fatalf("无法编码JSON: %v", err)
+			oflog.Print.Errorf("无法编码JSON: %v", err)
 		}
 
 		// 创建请求
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 		if err != nil {
-			log.Fatalf("创建请求失败: %v", err)
+			oflog.Print.Errorf("创建请求失败: %v", err)
 		}
 
 		// 设置请求头
@@ -195,21 +195,21 @@ func requst(token, username, testpaperid string) {
 		client := &http.Client{}
 		resp, err := client.Do(req)
 		if err != nil {
-			log.Fatalf("请求失败: %v", err)
+			oflog.Print.Errorf("请求失败: %v", err)
 		}
 		defer resp.Body.Close()
 
 		// 读取响应 body
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Fatalf("读取响应失败: %v", err)
+			oflog.Print.Errorf("读取响应失败: %v", err)
 		}
 
 		// 解析JSON响应
 		var response ResponseBody
 		err = json.Unmarshal(body, &response)
 		if err != nil {
-			log.Fatalf("解析JSON失败: %v", err)
+			oflog.Print.Errorf("解析JSON失败: %v", err)
 		}
 
 		// 提取数据
@@ -235,40 +235,40 @@ func requst(token, username, testpaperid string) {
 		jsonStr := strings.Trim(string(listelquJson), "[]")
 		listelquJson = []byte(jsonStr)
 		if err != nil {
-			log.Fatalf("无法编码 listelqu 数据为JSON: %v", err)
+			oflog.Print.Errorf("无法编码 listelqu 数据为JSON: %v", err)
 		}
 
 		// 写入到文件中
 		_, err = file.Write(listelquJson)
 		if err != nil {
-			log.Fatalf("写入文件失败: %v", err)
+			oflog.Print.Errorf("写入文件失败: %v", err)
 		}
 
 		// 添加逗号
 		_, err = file.WriteString(",\n")
 		if err != nil {
-			log.Fatalf("写入逗号失败: %v", err)
+			oflog.Print.Errorf("写入逗号失败: %v", err)
 		}
 
 		// 添加换行符
 		_, err = file.WriteString("\n")
 		if err != nil {
-			log.Fatalf("写入换行符失败: %v", err)
+			oflog.Print.Errorf("写入换行符失败: %v", err)
 		}
 
 		// 输出请求完成的消息
-		fmt.Printf("请求 %d 完成，listelqu数据已保存\n", i+1)
+		oflog.Print.Infof("请求 %d 完成，listelqu数据已保存", i+1)
 
 		// 添加延迟，控制请求频率
 		time.Sleep(requestInterval)
 	}
 
-	fmt.Println("请求已完成，listelqu数据已保存到response.json")
+	oflog.Print.Infof("请求已完成，listelqu数据已保存到response.json")
 
 	// 第一步：读取 response1.txt 文件内容
 	responseFile, err := os.Open("response1.json")
 	if err != nil {
-		fmt.Println("无法打开 response1.json:", err)
+		oflog.Print.Infof("无法打开 response1.json:", err)
 		return
 	}
 	defer responseFile.Close()
@@ -280,14 +280,14 @@ func requst(token, username, testpaperid string) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("读取 response1.txt 错误:", err)
+		oflog.Print.Errorf("读取 response1.txt 错误:", err)
 		return
 	}
 
 	// 第二步：读取目标文件
 	targetFile, err := os.Open("template.html")
 	if err != nil {
-		fmt.Println("无法打开目标文件:", err)
+		oflog.Print.Errorf("无法打开目标文件:", err)
 		return
 	}
 	defer targetFile.Close()
@@ -300,7 +300,7 @@ func requst(token, username, testpaperid string) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("读取目标文件错误:", err)
+		oflog.Print.Errorf("读取目标文件错误:", err)
 		return
 	}
 
@@ -320,7 +320,7 @@ func requst(token, username, testpaperid string) {
 	outputfilename := "index_" + testpaperid + ".html"
 	outputFile, err := os.Create(outputfilename)
 	if err != nil {
-		fmt.Println("无法创建输出文件:", err)
+		oflog.Print.Errorf("无法创建输出文件:", err)
 		return
 	}
 	defer outputFile.Close()
@@ -331,5 +331,5 @@ func requst(token, username, testpaperid string) {
 	}
 	writer.Flush()
 
-	fmt.Println("内容已成功插入到" + outputfilename + "文件中！")
+	oflog.Print.Infof("内容已成功插入到" + outputfilename + "文件中！")
 }
